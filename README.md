@@ -7,6 +7,7 @@ microservice that uses a sentence transformer model to index and search records.
 1. [Requirements](#requirements)
 2. [Quickstart](#quickstart)
 3. [Usage](#usage)
+4. [Test](#test).
 
 ## Requirements
 
@@ -29,7 +30,7 @@ pip install poetry
 
 create a python 3.10 virtual environment
 ```
-poetry env user 3.10
+poetry env use 3.10
 ```
 
 activate the environment
@@ -79,7 +80,7 @@ response:
 }
 ```
 
-## To index products in batch
+### To index products in batch
 
 request:
 ```bash
@@ -134,7 +135,7 @@ response:
 ]
 ```
 
-## To search for products
+### To search for products
 
 request
 ```bash
@@ -163,4 +164,11 @@ response:
         }
     ]
 }
+```
+
+## Test
+
+we use unittest with discover to run the tests that are in `./app/tests`
+```
+python -m unittest discover ./app/tests
 ```
