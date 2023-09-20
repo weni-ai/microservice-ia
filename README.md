@@ -11,7 +11,7 @@ microservice that uses a sentence transformer model to index and search records.
 
 ## Requirements
 
-* python 3.101
+* python 3.10
 * elasticsearch 8.9.1
 
 ## Quickstart
