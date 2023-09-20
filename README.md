@@ -7,7 +7,7 @@ microservice that uses a sentence transformer model to index and search records.
 1. [Requirements](#requirements)
 2. [Quickstart](#quickstart)
 3. [Usage](#usage)
-4. [Test](#test).
+4. [Test](#test)
 
 ## Requirements
 

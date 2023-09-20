@@ -4,7 +4,7 @@ from app.config import AppConfig
 
 class TestAppConfig(unittest.TestCase):
     def setUp(self):
-        os.environ["INDEX_NAME"] = "test_index"
+        os.environ["INDEX_PRODUCTS_NAME"] = "test_index"
         os.environ["ELASTICSEARCH_URL"] = "http://test.elasticsearch.com"
         os.environ["EMBEDDING_TYPE"] = "test_embedding"
         os.environ["SAGEMAKER_ENDPOINT_NAME"] = "test_endpoint"
@@ -14,7 +14,7 @@ class TestAppConfig(unittest.TestCase):
         os.environ["HUGGINGFACE_API_TOKEN"] = "test_token"
 
     def tearDown(self):
-        del os.environ["INDEX_NAME"]
+        del os.environ["INDEX_PRODUCTS_NAME"]
         del os.environ["ELASTICSEARCH_URL"]
         del os.environ["EMBEDDING_TYPE"]
         del os.environ["SAGEMAKER_ENDPOINT_NAME"]

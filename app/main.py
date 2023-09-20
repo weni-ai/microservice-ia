@@ -22,19 +22,20 @@ class App:
 
   def __init__(self, config:AppConfig):
     self.config = config
-    if config.embedding_type == "sagemaker":
+    if config.embedding_type == "huggingface":
+      self.embeddings = HuggingFaceHubEmbeddings(
+        repo_id=config.huggingfacehub["repo_id"],
+        task= config.huggingfacehub["task"],
+        huggingfacehub_api_token= config.huggingfacehub["huggingfacehub_api_token"],
+      )
+    else: # sagemaker by default
       content_handler = ContentHandler()
       self.embeddings = SagemakerEndpointEmbeddings(
         endpoint_name= config.sagemaker["endpoint_name"],
         region_name= config.sagemaker["region_name"],
         content_handler=content_handler
       )
-    elif config.embedding_type == "huggingface":
-      self.embeddings = HuggingFaceHubEmbeddings(
-        repo_id=config.huggingfacehub["repo_id"],
-        task= config.huggingfacehub["task"],
-        huggingfacehub_api_token= config.huggingfacehub["huggingfacehub_api_token"],
-      )
+    
     
     self.api = FastAPI()
     self.vectorstore = ElasticVectorSearch(elasticsearch_url=config.es_url, index_name=config.product_index_name, embedding=self.embeddings)
@@ -45,3 +46,4 @@ class App:
 
 config = AppConfig()
 main_app = App(config)
+print(config.embedding_type)

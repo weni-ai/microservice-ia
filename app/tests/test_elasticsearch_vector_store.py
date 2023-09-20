@@ -27,7 +27,7 @@ class ElasticsearchVectorStoreIndexTest(unittest.TestCase):
         self.vectorstore.add_texts(["test doc"], [{"id": "abc123"}])
         results = self.storage.search(search="test", filter={"id": "abc123"})
         assert len(results) == 1
-        assert results[0][0].page_content == "test doc"
+        assert results[0].page_content == "test doc"
 
 if __name__ == "__main__":
     unittest.main()
