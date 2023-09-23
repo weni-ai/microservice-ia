@@ -34,6 +34,3 @@ class TestAppConfig(unittest.TestCase):
         self.assertEqual(config.huggingfacehub["repo_id"], "test_repo_id")
         self.assertEqual(config.huggingfacehub["task"], "test_task")
         self.assertEqual(config.huggingfacehub["huggingfacehub_api_token"], "test_token")
-
-if __name__ == "__main__":
-    unittest.main()

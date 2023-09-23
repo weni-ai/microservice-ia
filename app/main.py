@@ -1,6 +1,6 @@
-from app.handlers.interface import IDocumentHandler
+from app.handlers import IDocumentHandler
 from app.handlers.products import ProductsHandler
-from app.indexer.interface import IDocumentIndexer
+from app.indexer import IDocumentIndexer
 from app.indexer.products import ProductsIndexer
 from app.store.elasticsearch_vector_store import ElasticsearchVectorStoreIndex
 from app.config import AppConfig
@@ -46,4 +46,3 @@ class App:
 
 config = AppConfig()
 main_app = App(config)
-print(config.embedding_type)

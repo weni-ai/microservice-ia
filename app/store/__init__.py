@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 
-class IDocumentHandler(ABC):
+class IStorage(ABC):
     @abstractmethod
-    def index(self):
+    def save(self) -> list[str]:
         pass
-    
+
     @abstractmethod
-    def batch_index(self):
+    def save_batch(self) -> list[str]:
         pass
     
     @abstractmethod
@@ -14,9 +14,11 @@ class IDocumentHandler(ABC):
         pass
 
     @abstractmethod
+    def query_search(self):
+        pass
+    
+    @abstractmethod
     def delete(self):
         pass
-
-    @abstractmethod
-    def delete_batch(self):
-        pass
+    
+    

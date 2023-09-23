@@ -1,77 +1,58 @@
-from typing import Any, Iterable, List, Optional, Tuple
 import unittest
 
-from langchain.vectorstores import VectorStore
+from langchain.vectorstores import ElasticVectorSearch
 from langchain.docstore.document import Document
 from app.store.elasticsearch_vector_store import ElasticsearchVectorStoreIndex
+from unittest.mock import Mock
 
 class ElasticsearchVectorStoreIndexTest(unittest.TestCase):
     def setUp(self):
-        self.vectorstore = VectorStoreMock()
+        self.vectorstore = Mock(spec=ElasticVectorSearch)
+        self.vectorstore.index_name = "index_test"    
+        self.vectorstore.client = Mock()
+        self.vectorstore.client.indices = Mock()
         self.storage = ElasticsearchVectorStoreIndex(self.vectorstore)
 
     def test_save(self):
-        doc = Document(page_content="test doc", metadata={"id": "abc123"})
-        self.storage.save(doc)
-        assert len(self.vectorstore.storage) == 1
+        self.vectorstore.add_texts.return_value = ["f40a4707-549e-4847-8f48-19b1987b8149"]
+        doc = Document(page_content="test doc", metadata={"doc_generic_id": "abc123"})
+        result = self.storage.save(doc)
+        self.vectorstore.add_texts.assert_called_once_with([doc.page_content], [doc.metadata])
+        self.assertEqual(result, ["f40a4707-549e-4847-8f48-19b1987b8149"])
 
     def test_save_batch(self):
+        docs_ids = ["1cdd36e4-8e4c-45b7-b3e4-e0365eee0b64", "8dce43f4-f20b-4035-b10d-f42476af4fb2"]
+        self.vectorstore.add_texts.return_value = docs_ids
         documents = [
-            Document(page_content="first doc", metadata={"id": "abc123"}),
-            Document(page_content="second doc", metadata={"id": "Jane Doe"})
+            Document(page_content="first doc", metadata={"doc_generic_id": "abc123"}),
+            Document(page_content="second doc", metadata={"doc_generic_id": "abc124"})
         ]
-        self.storage.save_batch(documents)
-        assert len(self.vectorstore.storage) == 2
-
+        result = self.storage.save_batch(documents)
+        self.vectorstore.add_texts.assert_called_once_with(
+            [doc.page_content for doc in documents], 
+            [doc.metadata for doc in documents],
+        )
+        self.assertEqual(result, docs_ids)
     def test_search(self):
-        self.vectorstore.add_texts(["test doc"], [{"id": "abc123"}])
-        results = self.storage.search(search="test", filter={"id": "abc123"})
-        assert len(results) == 1
-        assert results[0].page_content == "test doc"
-
-if __name__ == "__main__":
-    unittest.main()
-
-class VectorStoreMock(VectorStore):
-    def __init__(self):
-        self.storage = []
-        
-    def add_texts(self, texts: Iterable[str], metadatas: list[dict] | None = None, **kwargs: Any) -> List[str]:
-        i = 0
-        for text in texts:
-            doc = Document(page_content=text, metadata=metadatas[i])
-            self.storage.append(doc)
-            i=i+1
-            
-        return texts
+        self.vectorstore.similarity_search_with_score.return_value = [(Document(page_content="test doc", metadata={"doc_generic_id": "abc123"}), 1.6)]
+        results = self.storage.search(search="test", filter={"doc_generic_id": "abc123"})
+        self.vectorstore.similarity_search_with_score.assert_called_once_with(query="test", k=15, filter={"doc_generic_id": "abc123"})
+        self.assertEqual(1, len(results))
+        self.assertEqual(results[0].page_content, "test doc")
     
-    def similarity_search(self, query: str, k: int = 4, **kwargs: Any) -> List[Document]:
-        return super().similarity_search(query, k, **kwargs)
-    
-    def from_texts(
-        self,
-        texts,
-        embedding,
-        metadatas = None,
-        **kwargs: Any,
-    ):
-        pass
+    def test_delete(self):
+        self.vectorstore.delete.return_value = True
+        result = self.storage.delete(ids=["9ff6c70f-1dc4-4d52-b918-8d0d55462a45"])
+        self.assertEqual(True, result)
 
-    def similarity_search_with_score(
-        self, query: str, k: int = 4, filter: Optional[dict] = None, **kwargs: Any
-    ) -> List[Tuple[Document, float]]:
-        
-        matched_documents = [doc for doc in self.storage if query in doc.page_content.lower()]
+    def test_query_search(self):
+        self.vectorstore.client.indices.get.return_value = True
+        mock_search_hits = [{"_id": "53899082-cf01-41d1-ba9b-320a90670755"}]
+        self.vectorstore.client.search.return_value = {"hits": {"hits": mock_search_hits}}
+        result = self.storage.query_search({"doc_generic_id": "123", "metadata.sku": ["SKU-123"]})
+        self.assertEqual(result, mock_search_hits)
 
-        if filter is not None:
-            matched_documents = self._apply_filter(matched_documents, filter)
-
-        return [(td, 1.6) for td in matched_documents]
-
-    def _apply_filter(self, documents: list[Document], filter: dict) -> list[Document]:
-        filtered_documents = []
-        for doc in documents:
-            matched = all(doc.metadata.get(k) == v for k, v in filter.items())
-            if matched:
-                filtered_documents.append(doc)
-        return filtered_documents
+    def test_query_search_with_exception(self):
+        self.vectorstore.client.indices.get.side_effect = RuntimeError("Index Not Found")
+        result = self.storage.query_search({"doc_generic_id": "123", "metadata.sku": ["SKU-123"]})
+        self.assertEqual(result, [])

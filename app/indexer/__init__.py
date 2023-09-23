@@ -1,14 +1,22 @@
 from abc import ABC, abstractmethod
 
-class IDocumentHandler(ABC):
+class IDocumentIndexer(ABC):
     @abstractmethod
     def index(self):
         pass
     
     @abstractmethod
-    def batch_index(self):
+    def index_batch(self):
         pass
     
     @abstractmethod
     def search(self):
+        pass
+    
+    @abstractmethod
+    def delete(self):
+        pass
+
+    @abstractmethod
+    def delete_batch(self):
         pass
