@@ -15,8 +15,10 @@ microservice that uses a sentence transformer model to index and search records.
 * elasticsearch 8.9.1
 
 ## Quickstart
+on root directory of this project run the following commands to:
 
 setup sagemaker required keys and elasticsearch url environment variables
+
 ```
 export AWS_ACCESS_KEY_ID=YOUR_SAGEMAKER_AWS_ACCESS_KEY
 export AWS_SECRET_ACCESS_KEY=YOUR_SAGEMAKER_AWS_SECRET_ACCESS_KEY
@@ -47,6 +49,26 @@ start the microservice
 ```
 uvicorn app.main:main_app.api --reload
 ```
+
+### Docker compose
+
+to start sentenx with elasticsearch on with docker compose:
+
+setup `AWS_SECRET_ACCESS_KEY` and `AWS_ACCESS_KEY_ID` on `docker-compose.yml`
+```
+docker compose up -d
+```
+
+to stop:
+```
+docker compose down
+```
+
+to start with rebuild after any change on source:
+```
+docker compose up -d --
+```
+
 
 ## Usage
 
@@ -144,13 +166,12 @@ status: 200
 {
     "products": [
         {
-            "id": "1",
+            "facebook_id": "1",
             "title": "leite em pó 200g",
             "org_id": "1",
             "channel_id": "5",
             "catalog_id": "asdfgh4321",
-            "product_retailer_id": "abc321",
-            "shop": null
+            "product_retailer_id": "abc321"
         }
     ]
 }
