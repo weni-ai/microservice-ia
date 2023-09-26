@@ -2,6 +2,7 @@ import os
 import unittest
 from app.config import AppConfig
 
+
 class TestAppConfig(unittest.TestCase):
     def setUp(self):
         os.environ["INDEX_PRODUCTS_NAME"] = "test_index"
@@ -33,4 +34,6 @@ class TestAppConfig(unittest.TestCase):
         self.assertEqual(config.sagemaker["region_name"], "test_region")
         self.assertEqual(config.huggingfacehub["repo_id"], "test_repo_id")
         self.assertEqual(config.huggingfacehub["task"], "test_task")
-        self.assertEqual(config.huggingfacehub["huggingfacehub_api_token"], "test_token")
+        self.assertEqual(
+            config.huggingfacehub["huggingfacehub_api_token"], "test_token"
+        )

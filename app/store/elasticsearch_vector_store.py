@@ -2,6 +2,7 @@ from langchain.vectorstores import VectorStore
 from langchain.docstore.document import Document
 from app.store import IStorage
 
+
 class ElasticsearchVectorStoreIndex(IStorage):
     def __init__(self, vectorstore: VectorStore, score=1.55):
         self.vectorstore = vectorstore
@@ -18,7 +19,9 @@ class ElasticsearchVectorStoreIndex(IStorage):
         return self.vectorstore.add_texts(texts, metadatas)
 
     def search(self, search: str, filter=None, threshold=0.1) -> list[Document]:
-        sr = self.vectorstore.similarity_search_with_score(query=search, k=15, filter=filter)
+        sr = self.vectorstore.similarity_search_with_score(
+            query=search, k=15, filter=filter
+        )
         return [doc[0] for doc in sr if doc[1] > threshold]
 
     def query_search(self, search_filter: dict) -> list[dict]:
@@ -27,16 +30,10 @@ class ElasticsearchVectorStoreIndex(IStorage):
         term_field = list(search_filter.keys())[1]
         term_value = search_filter[term_field]
         query_script = {
-                "bool": {
-                    "must":[
-                        { "match": {match_field: match_value} }
-                    ],
-                    "filter": {
-                        "terms": {
-                            term_field: term_value
-                        }
-                    }
-                }
+            "bool": {
+                "must": [{"match": {match_field: match_value}}],
+                "filter": {"terms": {term_field: term_value}},
+            }
         }
         try:
             self.vectorstore.client.indices.get(index=self.vectorstore.index_name)
@@ -44,7 +41,9 @@ class ElasticsearchVectorStoreIndex(IStorage):
             return []
 
         source = ["metadata"]
-        response = self.vectorstore.client.search(index=self.vectorstore.index_name, query=query_script, source=source, size=1)
+        response = self.vectorstore.client.search(
+            index=self.vectorstore.index_name, query=query_script, source=source, size=1
+        )
         hits = [hit for hit in response["hits"]["hits"]]
         return hits
 

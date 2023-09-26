@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "microservice-ai"
+name = "SentenX"
 version = "0.1.0"
 description = ""
 authors = ["Rafael Soares <rafael.soares@weni.ai>"]

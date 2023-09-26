@@ -1,14 +1,15 @@
 import json
 from langchain.embeddings.sagemaker_endpoint import EmbeddingsContentHandler
 
+
 class ContentHandler(EmbeddingsContentHandler):
-  content_type = "application/json"
-  accepts = "application/json"
+    content_type = "application/json"
+    accepts = "application/json"
 
-  def transform_input(self, inputs: list[str], model_kwargs: dict) -> bytes:
-    input_str = json.dumps({"inputs": inputs, **model_kwargs})
-    return input_str.encode("utf-8")
+    def transform_input(self, inputs: list[str], model_kwargs: dict) -> bytes:
+        input_str = json.dumps({"inputs": inputs, **model_kwargs})
+        return input_str.encode("utf-8")
 
-  def transform_output(self, output: bytes) -> list[list[float]]:
-    response_json = json.loads(output.read().decode("utf-8"))
-    return response_json["vectors"]
+    def transform_output(self, output: bytes) -> list[list[float]]:
+        response_json = json.loads(output.read().decode("utf-8"))
+        return response_json["vectors"]
