@@ -8,6 +8,10 @@ services:
       - "8000:8000"
     depends_on:
       - elasticsearch
+    environment:
+      - AWS_SECRET_ACCESS_KEY=<AWS_VALID_SECRET_KEY>
+      - AWS_ACCESS_KEY_ID=<AWS_VALID_ACCESS_KEY>
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.9.1
     ports:
@@ -20,7 +24,7 @@ services:
       - ES_HEAP_SIZE=1g
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
       - http.cors.enabled=true
-      - http.cors.allow-origin=*
+      - http.cors.allow-origin="*"
       - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
       - http.cors.allow-credentials=true
       - network.publish_host=localhost

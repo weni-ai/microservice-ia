@@ -54,29 +54,29 @@ uvicorn app.main:main_app.api --reload
 
 request:
 ```bash
-curl -X POST http://localhost:8000/products/index \
+curl -X PUT http://localhost:8000/products/index \
 -H 'Content-Type: application/json' \
 -d '{
-  "id": "1",
-  "title": "leite em pó 200g",
-  "org_id": "1",
-  "channel_id": "5",
-  "catalog_id": "asdfgh4321",
-  "product_retailer_id": "abc321"
-}'
+    "catalog_id": "cat1",
+    "product": {
+        "facebook_id": "123456789",
+        "title": "massa para bolo de baunilha",
+        "org_id": "1",
+        "channel_id": "5",
+        "catalog_id": "cat1",
+        "product_retailer_id": "pp1"
+    }
+}
+'
 ```
 response:
 ```json
+status: 200
 {
-    "page_content": "leite em pó 200g",
-    "metadata": {
-        "id": "1",
-        "title": "leite em pó 200g",
-        "org_id": "1",
-        "channel_id": "5",
-        "catalog_id": "asdfgh4321",
-        "product_retailer_id": "abc321"
-    }
+    "catalog_id": "cat1",
+    "documents": [
+        "cac65148-8c1d-423c-a022-2a52cdedcd3c"
+    ]
 }
 ```
 
@@ -85,54 +85,42 @@ response:
 request:
 ```bash
 
-curl -X POST http://localhost:8000/products/batch \
+curl -X PUT http://localhost:8000/products/batch \
 -H 'Content-Type: application/json' \
--d '[
-  {
-    "id": "2",
-    "title": "chocolate em pó 200g",
-    "org_id": "1",
-    "channel_id": "5",
-    "catalog_id": "asdfgh1234",
-    "product_retailer_id": "abc123"
-  },
-  {
-    "id": "3",
-    "title": "café 250g",
-    "org_id": "1",
-    "channel_id": "5",
-    "catalog_id": "zxcvbn5678",
-    "product_retailer_id": "def456"
-  }
-]'
+-d '{
+    "catalog_id": "asdfgh",
+    "products": [
+        {
+            "facebook_id": "1234567891",
+            "title": "banana prata 1kg",
+            "org_id": "1",
+            "channel_id": "5",
+            "catalog_id": "asdfgh",
+            "product_retailer_id": "p1"
+        },
+        {
+            "facebook_id": "1234567892",
+            "title": "doce de banana 250g",
+            "org_id": "1",
+            "channel_id": "5",
+            "catalog_id": "asdfgh",
+            "product_retailer_id": "p2"
+        }
+    ]
+}'
 ```
 
 response:
 ```json
-[
-    {
-        "page_content": "chocolate em pó 200g",
-        "metadata": {
-            "id": "2",
-            "title": "chocolate em pó 200g",
-            "org_id": "1",
-            "channel_id": "5",
-            "catalog_id": "asdfgh1234",
-            "product_retailer_id": "abc123"
-        }
-    },
-    {
-        "page_content": "café 250g",
-        "metadata": {
-            "id": "3",
-            "title": "café 250g",
-            "org_id": "1",
-            "channel_id": "5",
-            "catalog_id": "zxcvbn5678",
-            "product_retailer_id": "def456"
-        }
-    }
-]
+status: 200
+
+{
+    "catalog_id": "asdfgh",
+    "documents": [
+        "f5b8d394-eb62-4c92-9501-51a8ebcf1380",
+        "bcb551e8-0bd1-4ca7-825b-cf8aa8a3f0e0"
+    ]
+}
 ```
 
 ### To search for products
@@ -142,15 +130,17 @@ request
 curl http://localhost:8000/products/search \
 -H 'Content-Type: application/json' \
 -d '{
-  "search": "leite em pó",
-  "filter": {
-      "channel_id": "5"
-  },
-  "threshold": 1.6
-}'
+    "search": "massa",
+    "filter": {
+        "catalog_id": "cat1"
+    },
+    "threshold": 1.6
+}
+'
 ```
 response:
 ```json
+status: 200
 {
     "products": [
         {
@@ -170,5 +160,6 @@ response:
 
 we use unittest with discover to run the tests that are in `./app/tests`
 ```
-python -m unittest discover ./app/tests
+coverage run -m unittest discover -s app/tests
 ```
+
