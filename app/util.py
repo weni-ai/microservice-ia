@@ -1,4 +1,5 @@
 import json
+
 from langchain.embeddings.sagemaker_endpoint import EmbeddingsContentHandler
 
 

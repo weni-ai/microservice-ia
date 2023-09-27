@@ -1,5 +1,6 @@
 from langchain.vectorstores import VectorStore
 from langchain.docstore.document import Document
+
 from app.store import IStorage
 
 

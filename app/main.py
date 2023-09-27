@@ -1,3 +1,8 @@
+from fastapi import FastAPI
+from langchain.embeddings import SagemakerEndpointEmbeddings, HuggingFaceHubEmbeddings
+from langchain.embeddings.base import Embeddings
+from langchain.vectorstores import ElasticVectorSearch, VectorStore
+
 from app.handlers import IDocumentHandler
 from app.handlers.products import ProductsHandler
 from app.indexer import IDocumentIndexer
@@ -5,11 +10,6 @@ from app.indexer.products import ProductsIndexer
 from app.store.elasticsearch_vector_store import ElasticsearchVectorStoreIndex
 from app.config import AppConfig
 from app.util import ContentHandler
-
-from fastapi import FastAPI
-from langchain.embeddings import SagemakerEndpointEmbeddings, HuggingFaceHubEmbeddings
-from langchain.embeddings.base import Embeddings
-from langchain.vectorstores import ElasticVectorSearch, VectorStore
 
 
 class App:

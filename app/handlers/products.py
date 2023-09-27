@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.logger import logger
+from pydantic import BaseModel
+
 from app.handlers import IDocumentHandler
 from app.indexer import IDocumentIndexer
-from pydantic import BaseModel
 
 
 class Product(BaseModel):

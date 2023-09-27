@@ -1,4 +1,5 @@
 from langchain.docstore.document import Document
+
 from app.handlers.products import Product
 from app.indexer import IDocumentIndexer
 from app.store import IStorage

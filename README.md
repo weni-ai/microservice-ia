@@ -1,3 +1,5 @@
+[![CI](https://github.com/weni-ai/SentenX/actions/workflows/ci.yaml/badge.svg)](https://github.com/weni-ai/SentenX/actions/workflows/ci.yaml)
+
 # SentenX
 
 microservice that uses a sentence transformer model to index and search records.
@@ -52,7 +54,7 @@ uvicorn app.main:main_app.api --reload
 
 ### Docker compose
 
-to start sentenx with elasticsearch on with docker compose:
+to start sentenx with elasticsearch with docker compose:
 
 setup `AWS_SECRET_ACCESS_KEY` and `AWS_ACCESS_KEY_ID` on `docker-compose.yml`
 ```
@@ -66,7 +68,7 @@ docker compose down
 
 to start with rebuild after any change on source:
 ```
-docker compose up -d --
+docker compose up -d --build
 ```
 
 
@@ -167,7 +169,7 @@ status: 200
     "products": [
         {
             "facebook_id": "1",
-            "title": "leite em pó 200g",
+            "title": "massa para bolo de baunilha",
             "org_id": "1",
             "channel_id": "5",
             "catalog_id": "asdfgh4321",
