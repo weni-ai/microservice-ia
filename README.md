@@ -1,4 +1,4 @@
-[![CI](https://github.com/weni-ai/SentenX/actions/workflows/ci.yaml/badge.svg)](https://github.com/weni-ai/SentenX/actions/workflows/ci.yaml)
+[![CI](https://github.com/weni-ai/SentenX/actions/workflows/ci.yaml/badge.svg)](https://github.com/weni-ai/SentenX/actions/workflows/ci.yaml) [![codecov](https://codecov.io/github/weni-ai/SentenX/graph/badge.svg?token=HKHVFE9KBU)](https://codecov.io/github/weni-ai/SentenX)
 
 # SentenX
 
