@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "SentenX"
+version = "0.1.0"
+description = ""
+authors = ["Rafael Soares <rafael.soares@weni.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+langchain = "^0.0.281"
+tiktoken = "^0.4.0"
+elasticsearch = "^8.9.0"
+boto3 = "^1.28.41"
+fastapi = "^0.103.1"
+uvicorn = "^0.23.2"
+huggingface-hub = "^0.16.4"
+
+
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.3.1"
+black = "^23.9.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
