@@ -43,7 +43,7 @@ class ElasticsearchVectorStoreIndex(IStorage):
 
         source = ["metadata"]
         response = self.vectorstore.client.search(
-            index=self.vectorstore.index_name, query=query_script, source=source, size=1
+            index=self.vectorstore.index_name, query=query_script, source=source
         )
         hits = [hit for hit in response["hits"]["hits"]]
         return hits
