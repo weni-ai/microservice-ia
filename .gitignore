@@ -163,3 +163,4 @@ cython_debug/
 *cache*
 .coverage
 htmlcov
+.tool-versions

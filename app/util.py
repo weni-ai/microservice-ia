@@ -1,5 +1,4 @@
 import json
-
 from langchain.embeddings.sagemaker_endpoint import EmbeddingsContentHandler
 
 
@@ -14,3 +13,7 @@ class ContentHandler(EmbeddingsContentHandler):
     def transform_output(self, output: bytes) -> list[list[float]]:
         response_json = json.loads(output.read().decode("utf-8"))
         return response_json["vectors"]
+
+
+def count_words(s):
+    return len(s.split())
