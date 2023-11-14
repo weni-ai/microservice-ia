@@ -24,3 +24,4 @@ class AppConfig:
                 "HUGGINGFACE_API_TOKEN", "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"
             ),
         }
+        self.es_timeout = os.environ.get("ELASTICSEARCH_TIMEOUT", "30")
