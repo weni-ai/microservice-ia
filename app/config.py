@@ -24,3 +24,4 @@ class AppConfig:
                 "HUGGINGFACE_API_TOKEN", "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"
             ),
         }
+        self.sentry_dsn = os.environ.get("SENTRY_DSN", "")

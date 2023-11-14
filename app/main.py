@@ -1,3 +1,4 @@
+import sentry_sdk
 from fastapi import FastAPI
 from langchain.embeddings import SagemakerEndpointEmbeddings, HuggingFaceHubEmbeddings
 from langchain.embeddings.base import Embeddings
@@ -36,6 +37,11 @@ class App:
                 endpoint_name=config.sagemaker["endpoint_name"],
                 region_name=config.sagemaker["region_name"],
                 content_handler=content_handler,
+            )
+
+        if config.sentry_dsn != "":
+            sentry_sdk.init(
+                dsn=config.sentry_dsn,
             )
 
         self.api = FastAPI()
