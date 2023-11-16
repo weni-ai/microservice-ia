@@ -1,4 +1,4 @@
-from pydantic import model_validator, root_validator
+from pydantic import root_validator
 import time
 from langchain.embeddings import SagemakerEndpointEmbeddings
 from typing import Dict, List
@@ -7,6 +7,21 @@ from typing import Dict, List
 class SagemakerEndpointEmbeddingsKeys(SagemakerEndpointEmbeddings):
     aws_key: str = ""
     aws_secret: str = ""
+
+    @root_validator(skip_on_failure=True)
+    def validate_environment(cls, values: Dict) -> Dict:
+        import boto3
+
+        session = boto3.Session(
+        aws_access_key_id=values["aws_key"],
+        aws_secret_access_key=values["aws_secret"]
+        )
+
+        values["client"] = session.client(
+        "sagemaker-runtime", region_name=values["region_name"]
+        )
+
+        return values
 
     def embed_documents(
         self, texts: List[str], chunk_size: int = 32
@@ -54,7 +69,7 @@ class SagemakerEndpointEmbeddingsKeys(SagemakerEndpointEmbeddings):
                 return self.content_handler.transform_output(response["Body"])
             except Exception as e:
                 print(
-                    f"Error raised by inference endpoint: {e}\nBody: {body}. Trying again in 5 seconds."
+                    f"Error raised by inference endpoint: {e}\nBody: . Trying again in 5 seconds."
                 )
                 time.sleep(60 * 5)
 

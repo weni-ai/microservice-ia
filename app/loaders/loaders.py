@@ -50,3 +50,13 @@ def xlsx_loader(file: str) -> Callable:
     """Loads .xlsx and .xls files"""
     loader = UnstructuredExcelLoader(file, mode="elements")
     return loader.load()
+
+
+supported_loaders = {
+    'txt': txt_loader,
+    'pdf': pdf_loader,
+    'doc': docx_loader,
+    'docx': docx_loader,
+    'xls': xlsx_loader,
+    'xlsx': xlsx_loader,
+}
