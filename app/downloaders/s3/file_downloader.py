@@ -5,6 +5,7 @@ from fastapi.logger import logger
 from urllib.parse import urlparse
 from typing import Tuple, List
 
+
 class S3FileDownloader(IFileDownloader):
 
     def __init__(self, 
@@ -43,8 +44,3 @@ def get_s3_bucket_and_file_name(file_url: str)-> Tuple[str, ...]:
     bucket_name = result.netloc.split('.s3')[0]
     file_name = result.path.strip('/')
     return bucket_name, file_name
-
-
-def download_file(file_downloader, file_name: str):
-    handler = file_downloader
-    handler.download_file(file_name)
