@@ -1,4 +1,4 @@
-from pydantic import root_validator
+from pydantic.v1 import root_validator
 import time
 from langchain.embeddings import SagemakerEndpointEmbeddings
 from typing import Dict, List
