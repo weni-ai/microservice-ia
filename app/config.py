@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class AppConfig:
     def __init__(self):
         self.product_index_name = os.environ.get(

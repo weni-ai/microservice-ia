@@ -14,7 +14,7 @@ from app.util import ContentHandler
 
 from app.handlers.content_bases import ContentBaseHandler
 from app.indexer.content_bases import ContentBaseIndexer
-from app.downloaders.s3.file_downloader import S3FileDownloader
+from app.downloaders.s3 import S3FileDownloader
 import os
 from fastapi.logger import logger
 from app.embedders.embedders import SagemakerEndpointEmbeddingsKeys
@@ -38,15 +38,6 @@ class App:
                     "huggingfacehub_api_token"
                 ],
             )
-        elif config.embedding_type == "document-indexing": # change to self.custom_embedding, should be able to use sagemaker to product indexing
-            content_handler = ContentHandler()
-            self.embeddings = SagemakerEndpointEmbeddingsKeys(
-                    aws_key=config.sagemaker_aws["aws_key"],
-                    aws_secret=config.sagemaker_aws["aws_secret"],
-                    endpoint_name=config.sagemaker_aws["endpoint_name"],
-                    region_name=config.sagemaker_aws["region_name"],
-                    content_handler=content_handler,
-                )
         else:  # sagemaker by default
             content_handler = ContentHandler()
             self.embeddings = SagemakerEndpointEmbeddings(
@@ -66,6 +57,14 @@ class App:
         self.products_handler = ProductsHandler(self.products_indexer)
         self.api.include_router(self.products_handler.router)
 
+        content_base_content_handler = ContentHandler()
+        self.content_base_embeddings = SagemakerEndpointEmbeddingsKeys(
+                aws_key=config.sagemaker_aws["aws_key"],
+                aws_secret=config.sagemaker_aws["aws_secret"],
+                endpoint_name=config.sagemaker_aws["endpoint_name"],
+                region_name=config.sagemaker_aws["region_name"],
+                content_handler=content_base_content_handler,
+            )
         self.content_base_vectorstore = ElasticVectorSearch(
             elasticsearch_url=config.es_url,
             index_name=config.content_base_index_name,

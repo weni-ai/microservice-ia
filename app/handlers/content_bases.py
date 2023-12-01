@@ -6,36 +6,21 @@ from app.handlers import IDocumentHandler
 from app.indexer import IDocumentIndexer
 from app.downloaders import IFileDownloader
 
-from uuid import UUID
-from app.text_splitters.text_splitters import get_split_text
-from app.downloaders.s3.file_downloader import download_file, get_s3_bucket_and_file_name
+from app.celery import index_file_data, celery
 
 
 class ContentBaseIndexRequest(BaseModel):
-    file_url: str
-    document_type: str
-    base_uuid: UUID
+    file: str
+    filename: str
+    extension_file: str
+    task_uuid: str
+    content_base: str
 
 
 class ContentBaseIndexResponse(BaseModel):
-    file_url: str
-    document_type: str
-    base_uuid: UUID
-
-
-def get_raw_data(file_name, file_type):
-    from app.loaders.loaders import supported_loaders, DataLoader
-    file_path = f'app/files/{file_name}'
-    loader = supported_loaders.get(file_type)
-    data_loader = DataLoader(loader, file_path)
-    return data_loader.raw_text()
-
-def get_loaded_data(file_name, file_type):
-    from app.loaders.loaders import supported_loaders, DataLoader
-    file_path = f'app/files/{file_name}'
-    loader = supported_loaders.get(file_type)
-    data_loader = DataLoader(loader, file_path)
-    return data_loader.load()
+    file: str
+    filename: str
+    task_uuid: str
 
 
 class ContentBaseHandler(IDocumentHandler):
@@ -48,22 +33,14 @@ class ContentBaseHandler(IDocumentHandler):
         self.file_downloader = file_downloader
 
     def index(self, request: ContentBaseIndexRequest):
-        bucket_name, file_name = get_s3_bucket_and_file_name(request.file_url)
 
-        download_file(self.file_downloader, file_name)
-
-        raw_data = get_raw_data(file_name, request.document_type)
-
-        metadatas = {'source': file_name, "content_base_uuid": str(request.base_uuid)}
-
-        texts = get_split_text(raw_data)
-
-        self.content_base_indexer.index(texts, metadatas)
+        content_base = request.__dict__
+        task = index_file_data.delay(content_base)
 
         return ContentBaseIndexResponse(
-            file_url=request.file_url,
-            document_type=request.document_type,
-            base_uuid=request.base_uuid
+            file=request.file,
+            filename=request.filename,
+            task_uuid=task.id,
         )
 
     def batch_index(self):
