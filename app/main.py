@@ -14,9 +14,6 @@ from app.util import ContentHandler
 
 from app.handlers.content_bases import ContentBaseHandler
 from app.indexer.content_bases import ContentBaseIndexer
-from app.downloaders.s3 import S3FileDownloader
-import os
-from fastapi.logger import logger
 from app.embedders.embedders import SagemakerEndpointEmbeddingsKeys
 
 
@@ -68,13 +65,12 @@ class App:
         self.content_base_vectorstore = ElasticVectorSearch(
             elasticsearch_url=config.es_url,
             index_name=config.content_base_index_name,
-            embedding=self.embeddings,
+            embedding=self.content_base_embeddings,
         )
         self.custom_elasticStore = ContentBaseElasticsearchVectorStoreIndex(self.content_base_vectorstore)
-        self.file_downloader = S3FileDownloader(os.environ.get("AWS_STORAGE_ACCESS_KEY"), os.environ.get("AWS_STORAGE_SECRET_KEY"))
-        self.content_ai_indexer = ContentBaseIndexer(self.custom_elasticStore)
-        self.content_ai_handler = ContentBaseHandler(self.content_ai_indexer, self.file_downloader)
-        self.api.include_router(self.content_ai_handler.router)
+        self.content_base_indexer = ContentBaseIndexer(self.custom_elasticStore)
+        self.content_base_handler = ContentBaseHandler(self.content_base_indexer)
+        self.api.include_router(self.content_base_handler.router)
 
 config = AppConfig()
 main_app = App(config)

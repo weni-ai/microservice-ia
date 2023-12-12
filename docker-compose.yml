@@ -10,8 +10,8 @@ services:
       - elasticsearch
       - redis
     environment:
-      - AWS_SECRET_ACCESS_KEY=<AWS_VALID_SECRET_KEY>
-      - AWS_ACCESS_KEY_ID=<AWS_VALID_ACCESS_KEY>
+      - AWS_SECRET_ACCESS_KEY=${AWS_VALID_SECRET_KEY}
+      - AWS_ACCESS_KEY_ID=${AWS_VALID_ACCESS_KEY}
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - SAGE_MAKER_AWS_KEY=${SAGE_MAKER_AWS_KEY}
@@ -20,7 +20,6 @@ services:
       - AWS_STORAGE_SECRET_KEY=${AWS_STORAGE_SECRET_KEY}
       - AWS_STORAGE_BUCKET_NAME=${AWS_STORAGE_BUCKET_NAME}
       - AWS_STORAGE_REGION_NAME=${AWS_STORAGE_REGION_NAME}
-      - EMBEDDING_TYPE=document-indexing
       - ELASTICSEARCH_URL=http://elasticsearch:9200
     networks:
       - default
@@ -59,7 +58,6 @@ services:
       - AWS_STORAGE_SECRET_KEY=${AWS_STORAGE_SECRET_KEY}
       - AWS_STORAGE_BUCKET_NAME=${AWS_STORAGE_BUCKET_NAME}
       - AWS_STORAGE_REGION_NAME=${AWS_STORAGE_REGION_NAME}
-      - EMBEDDING_TYPE=document-indexing
       - ELASTICSEARCH_URL=http://elasticsearch:9200
     networks:
       - default

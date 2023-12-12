@@ -24,13 +24,12 @@ class ContentBaseIndexResponse(BaseModel):
 
 
 class ContentBaseHandler(IDocumentHandler):
-    def __init__(self, content_base_indexer: IDocumentIndexer, file_downloader: IFileDownloader):
+    def __init__(self, content_base_indexer: IDocumentIndexer):
         self.content_base_indexer = content_base_indexer
         self.router = APIRouter()
         self.router.add_api_route(
             "/content_base/index", endpoint=self.index, methods=["PUT"]
         )
-        self.file_downloader = file_downloader
 
     def index(self, request: ContentBaseIndexRequest):
 

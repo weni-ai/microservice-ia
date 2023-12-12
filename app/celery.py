@@ -1,12 +1,9 @@
 import os
 from celery import Celery
 
-from app.text_splitters.text_splitters import get_split_text
-from app.loaders import load_file_and_get_raw_text
-from typing import List, Dict
-from fastapi.logger import logger
-from app.downloaders.exceptions import FileDownloaderException
-from app.downloaders import download_file
+from typing import Dict
+from app.indexer.indexer_file_manager import IndexerFileManager
+from app.downloaders.s3 import S3FileDownloader
 
 
 celery = Celery(__name__)
@@ -18,34 +15,13 @@ celery.conf.result_backend = os.environ.get(
     )
 
 
-def get_file_metadata(content_base: Dict) -> Dict[str, str]:
-    return {
-            'source': content_base.get("filename"),
-            "content_base_uuid": str(content_base.get('content_base'))
-        }
-
-
 @celery.task(name="index_file")
 def index_file_data(content_base: Dict) -> bool:
     from app.main import main_app
 
-    filename: str = content_base.get("filename")
-
-    try:
-        download_file(main_app.file_downloader, filename)
-    except FileDownloaderException as err:
-        logger.exception(err)
-        return False
-
-    file_raw_text: str = load_file_and_get_raw_text(
-            filename, content_base.get('extension_file')
-        )
-    metadatas: Dict[str, str] = get_file_metadata(content_base)
-    texts: List[str] = get_split_text(file_raw_text)
-
-    try:
-        main_app.content_ai_indexer.index(texts, metadatas)
-        return True
-    except Exception as e:  # TODO: handle exceptions
-        logger.exception(e)
-        return False
+    file_downloader = S3FileDownloader(
+        os.environ.get("AWS_STORAGE_ACCESS_KEY"),
+        os.environ.get("AWS_STORAGE_SECRET_KEY")
+    )
+    manager = IndexerFileManager(file_downloader, main_app.content_base_indexer)
+    return manager.index_file(content_base)
