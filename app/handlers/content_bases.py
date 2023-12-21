@@ -50,12 +50,13 @@ class ContentBaseHandler(IDocumentHandler):
     def index(self, request: ContentBaseIndexRequest, Authorization: Annotated[str | None, Header()] = None):
         token_verification(Authorization)
         content_base = request.__dict__
-        task = index_file_data.delay(content_base)
+        # task = index_file_data.delay(content_base)
+        task = index_file_data(content_base)
 
         return ContentBaseIndexResponse(
             file=request.file,
             filename=request.filename,
-            task_uuid=task.id,
+            task_uuid="task.id",
         )
 
     def batch_index(self):
