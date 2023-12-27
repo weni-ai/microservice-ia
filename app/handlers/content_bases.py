@@ -34,6 +34,13 @@ class ContentBaseSearchResponse(BaseModel):
     response: List[str]
 
 
+class ContentBaseDeleteRequest(BaseModel):
+    filename: str
+    content_base: str
+
+class ContentBaseDeleteResponse(BaseModel):
+    deleted: bool
+
 class ContentBaseHandler(IDocumentHandler):
     def __init__(self, content_base_indexer: IDocumentIndexer):
         self.content_base_indexer = content_base_indexer
@@ -43,6 +50,9 @@ class ContentBaseHandler(IDocumentHandler):
         )
         self.router.add_api_route(
             "/content_base/search", endpoint=self.search, methods=["GET"]
+        )
+        self.router.add_api_route(
+            "/content_base/delete", endpoint=self.delete, methods=["DELETE"]
         )
 
     def index(self, request: ContentBaseIndexRequest, Authorization: Annotated[str | None, Header()] = None):
@@ -59,8 +69,13 @@ class ContentBaseHandler(IDocumentHandler):
     def batch_index(self):
         raise NotImplementedError
 
-    def delete(self):
-        raise NotImplementedError
+    def delete(self, request: ContentBaseDeleteRequest, Authorization: Annotated[str | None, Header()] = None):
+        token_verification(Authorization)
+        self.content_base_indexer.delete(
+            request.content_base,
+            request.filename
+        )
+        return ContentBaseDeleteResponse(deleted=True)
 
     def delete_batch(self):
         raise NotImplementedError
