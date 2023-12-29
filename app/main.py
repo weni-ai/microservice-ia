@@ -74,3 +74,8 @@ class App:
 
 config = AppConfig()
 main_app = App(config)
+
+
+@main_app.api.get('/', status_code=200)
+def home():
+    return {}
