@@ -81,7 +81,6 @@ class ProductsHandler(IDocumentHandler):
             docs = self.product_indexer.index(request.catalog_id, request.product)
             return ProductIndexResponse(catalog_id=request.catalog_id, documents=docs)
         except Exception as e:
-            logger.error(msg=str(e))
             raise HTTPException(status_code=500, detail=[{"msg": str(e)}])
 
     def batch_index(self, request: ProductBatchIndexRequest):
@@ -91,7 +90,6 @@ class ProductsHandler(IDocumentHandler):
             )
             return ProductIndexResponse(catalog_id=request.catalog_id, documents=docs)
         except Exception as e:
-            logger.error(msg=str(e))
             raise HTTPException(status_code=500, detail=[{"msg": str(e)}])
 
     def search(self, request: ProductSearchRequest):
@@ -101,7 +99,6 @@ class ProductsHandler(IDocumentHandler):
             )
             return ProductSearchResponse(products=matched_products)
         except Exception as e:
-            logger.error(msg=str(e))
             raise HTTPException(status_code=500, detail=[{"msg": str(e)}])
 
     def delete(
@@ -117,7 +114,6 @@ class ProductsHandler(IDocumentHandler):
             docs = self.product_indexer.delete(catalog_id, product_retailer_id)
             return ProductIndexResponse(catalog_id=catalog_id, documents=docs)
         except Exception as e:
-            logger.error(msg=str(e))
             raise HTTPException(status_code=500, detail=[{"msg": str(e)}])
 
     def delete_batch(self, request: ProductDeleteRequest):
@@ -127,5 +123,4 @@ class ProductsHandler(IDocumentHandler):
             )
             return ProductIndexResponse(catalog_id=request.catalog_id, documents=docs)
         except Exception as e:
-            logger.error(msg=str(e))
             raise HTTPException(status_code=500, detail=[{"msg": str(e)}])
