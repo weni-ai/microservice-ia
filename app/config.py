@@ -25,3 +25,4 @@ class AppConfig:
             ),
         }
         self.sentry_dsn = os.environ.get("SENTRY_DSN", "")
+        self.es_timeout = os.environ.get("ELASTICSEARCH_TIMEOUT", "30")
