@@ -49,7 +49,7 @@ class ContentBaseHandler(IDocumentHandler):
             "/content_base/index", endpoint=self.index, methods=["PUT"]
         )
         self.router.add_api_route(
-            "/content_base/search", endpoint=self.search, methods=["GET"]
+            "/content_base/search", endpoint=self.search, methods=["POST"]
         )
         self.router.add_api_route(
             "/content_base/delete", endpoint=self.delete, methods=["DELETE"]
@@ -81,6 +81,8 @@ class ContentBaseHandler(IDocumentHandler):
         raise NotImplementedError
 
     def search(self, request: ContentBaseSearchRequest, Authorization: Annotated[str | None, Header()] = None):
+        from fastapi.logger import logger
+        logger.error(ContentBaseSearchRequest)
         token_verification(Authorization)
         response = self.content_base_indexer.search(
             search=request.search.lower(),
