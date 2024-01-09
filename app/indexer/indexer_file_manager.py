@@ -1,4 +1,4 @@
-from app.loaders import load_file_and_get_raw_text
+from app.loaders import load_file_and_get_raw_text, load_file_url_and_get_raw_text
 from app.text_splitters import get_split_text
 from typing import Dict, List
 from fastapi.logger import logger
@@ -20,7 +20,7 @@ class IndexerFileManager:
         self.content_base_indexer = content_base_indexer
 
     def index_file_url(self, content_base):
-        file_raw_text: str = load_file_and_get_raw_text(
+        file_raw_text: str = load_file_url_and_get_raw_text(
                 content_base.get("file"), content_base.get('extension_file')
             )
         metadatas: Dict[str, str] = get_file_metadata(content_base)
