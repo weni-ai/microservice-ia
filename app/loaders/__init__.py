@@ -16,3 +16,8 @@ def load_file_and_get_raw_text(file_name: str, file_type: str):
     loader = supported_loaders.get(file_type)
     data_loader = DataLoader(loader, file_path)
     return data_loader.raw_text()
+
+def load_file_url_and_get_raw_text(file_url: str, file_type: str):
+    loader = supported_loaders.get(file_type)
+    data_loader = DataLoader(loader, file_url)
+    return data_loader.raw_text()
