@@ -31,6 +31,7 @@ class ContentBaseIndexer(IDocumentIndexer):
         raise NotImplementedError
 
     def search(self, search, filter=None, threshold=0.1) -> list[Product]:
+        print(F'INDEXER: {search}\n{filter}\n{threshold}')
         matched_responses = self.storage.search(search, filter, threshold)
         return [doc.page_content for doc in matched_responses]
 
