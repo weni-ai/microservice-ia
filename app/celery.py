@@ -28,4 +28,4 @@ def index_file_data(content_base: Dict) -> bool:
     index_result: bool = manager.index_file(content_base)
     NexusRESTClient().index_succedded(task_succeded=index_result, nexus_task_uuid=content_base.get("task_uuid"))
 
-    return manager.index_file(content_base)
+    return index_result
