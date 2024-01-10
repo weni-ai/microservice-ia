@@ -39,5 +39,5 @@ class AppConfig:
         }
 
         self.content_base_index_name = os.environ.get(
-            "INDEX_PRODUCTS_NAME", "content_bases"
+            "INDEX_CONTENT_BASE_NAME", "content_bases"
         )
