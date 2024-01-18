@@ -52,6 +52,26 @@ def txt_loader(file: str) -> Callable:
     loader = TextLoader(file)
     return loader.load()
 
+class TxtLoader(DocumentLoader):
+    def __init__(self, file:str) -> None:
+        self.loader = TextLoader(file)
+    
+    def load(self) -> List[Document]:
+        return self.loader.load_and_split()
+    
+    def load_and_split_text(self, text_splitter: ITextSplitter) -> List[Document]:
+        pages = self.load()
+        split_pages = []
+        for page in pages:
+            page_content = page.page_content.lower()
+            metadatas = page.metadata
+            metadatas.update({"full_page": page_content})
+
+            text_chunks = text_splitter.split_text(page_content)
+            for chunk in text_chunks:
+                split_pages.append(Document(page_content=chunk, metadata=metadatas))
+        return split_pages
+
 
 class PDFLoader(DocumentLoader):
     def __init__(self, file: str) -> None:
@@ -90,6 +110,27 @@ def pdf_loader(file: str) -> Callable:
     loader = PyPDFLoader(file)
     pages = loader.load_and_split()
     return pages
+
+
+class DocxLoader(DocumentLoader):
+    def __init__(self, file:str) -> None:
+        self.loader = UnstructuredWordDocumentLoader(file)
+
+    def load(self) -> List[Document]:
+        return self.loader.load_and_split()
+    
+    def load_and_split_text(self, text_splitter: ITextSplitter) -> List[Document]:
+        pages = self.load()
+        split_pages = []
+        for page in pages:
+            page_content = page.page_content.lower()
+            metadatas = page.metadata
+            metadatas.update({"full_page": page_content})
+
+            text_chunks = text_splitter.split_text(page_content)
+            for chunk in text_chunks:
+                split_pages.append(Document(page_content=chunk, metadata=metadatas))
+        return split_pages
 
 
 def docx_loader(file: str) -> Callable:
