@@ -11,6 +11,9 @@ class ContentBaseIndexer(IDocumentIndexer):
     def __init__(self, storage: IStorage):
         self.storage = storage
 
+    def index_documents(self, docs: List[Document]):
+        return self.storage.save(docs)
+
     def index(self, texts: List, metadatas: dict):
         results = self._search_docs_by_content_base_uuid(
             content_base_uuid=metadatas.get('content_base_uuid')
@@ -32,7 +35,7 @@ class ContentBaseIndexer(IDocumentIndexer):
 
     def search(self, search, filter=None, threshold=0.1) -> list[Product]:
         matched_responses = self.storage.search(search, filter, threshold)
-        return [doc.page_content for doc in matched_responses]
+        return set([doc.metadata.get("full_page") for doc in matched_responses])
 
     def _search_docs_by_content_base_uuid(self, content_base_uuid: UUID):
         search_filter = {
