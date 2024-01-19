@@ -1,10 +1,14 @@
+import os
+import uuid
+import requests
+from abc import ABC, abstractmethod
+
 from langchain.document_loaders import (
     TextLoader, PyPDFLoader, UnstructuredExcelLoader,
     UnstructuredWordDocumentLoader, Docx2txtLoader
 )
-from typing import Callable, List
 from langchain.schema.document import Document
-from abc import ABC, abstractmethod
+from typing import Callable, List
 from app.text_splitters import ITextSplitter
 
 
@@ -53,8 +57,20 @@ def txt_loader(file: str) -> Callable:
     return loader.load()
 
 class TxtLoader(DocumentLoader):
+    def _get_file(self, file: str):
+        if os.environ.get("AWS_STORAGE_BUCKET_NAME") in file:
+            response = requests.get(file)
+            if response.status_code == 200:
+                file_path = f"/tmp/{uuid.uuid4()}.txt"
+                text = response.text
+                with open(file_path, "w") as file:
+                    file.write(text)
+                return file_path
+        return file
+
     def __init__(self, file:str) -> None:
-        self.loader = TextLoader(file)
+        self.file = self._get_file(file)
+        self.loader = TextLoader(self.file)
     
     def load(self) -> List[Document]:
         return self.loader.load_and_split()
