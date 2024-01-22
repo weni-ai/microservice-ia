@@ -19,7 +19,7 @@ class NexusRESTClient:
         data = { 
             "status": int(task_succeded),
             "task_uuid": nexus_task_uuid,
-            "file_type": file_type,
+            "file_type": "text" if file_type == "txt" else "file",
         }
         response = requests.patch(url=endpoint, data=json.dumps(data), headers=self.headers)
         response.raise_for_status()
