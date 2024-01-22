@@ -1,6 +1,6 @@
 
 import os
-from app.loaders.loaders import (DataLoader, txt_loader, pdf_loader, docx_loader, xlsx_loader, DataLoaderCls, PDFLoader)
+from app.loaders.loaders import (DataLoader, txt_loader, pdf_loader, docx_loader, xlsx_loader, DataLoaderCls, PDFLoader, DocxLoader, TxtLoader)
 from langchain.schema.document import Document
 from typing import List
 from app.text_splitters import ITextSplitter
@@ -14,7 +14,10 @@ supported_loaders = {
 }
 
 supported_loaders_cls = {
-    'pdf': PDFLoader
+    'pdf': PDFLoader,
+    'doc': DocxLoader,
+    'docx': DocxLoader,
+    'txt': TxtLoader,
 }
 
 

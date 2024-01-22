@@ -3,6 +3,8 @@ from app.loaders.loaders import (
     DataLoader,
     DataLoaderCls,
     PDFLoader,
+    DocxLoader,
+    TxtLoader,
     pdf_loader,
     txt_loader,
     docx_loader,
@@ -124,6 +126,18 @@ class TestDocumentLoader(unittest.TestCase):
         file_path = f'{self.path}/{self.file_name}.pdf'
         pdf_loader = PDFLoader(file_path)
         split_pages: List[Document] = pdf_loader.load_and_split_text(self.text_splitter)
+        self.assertEqual(list, type(split_pages))
+
+    def test_docx_loader_cls(self):
+        file_path = f'{self.path}/{self.file_name}.docx'
+        docx_loader = DocxLoader(file_path)
+        split_pages: List[Document] = docx_loader.load_and_split_text(self.text_splitter)
+        self.assertEqual(list, type(split_pages))
+    
+    def test_txt_loader_cls(self):
+        file_path = f'{self.path}/{self.file_name}.txt'
+        docx_loader = TxtLoader(file_path)
+        split_pages: List[Document] = docx_loader.load_and_split_text(self.text_splitter)
         self.assertEqual(list, type(split_pages))
 
     def test_load_file_url_and_split_text(self):
