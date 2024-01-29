@@ -12,6 +12,18 @@ class ContentBaseIndexer(IDocumentIndexer):
         self.storage = storage
 
     def index_documents(self, docs: List[Document]):
+        file_uuid = docs[0].metadata["file_uuid"]
+        content_base_uuid = docs[0].metadata["content_base_uuid"]
+
+        results = self._search_docs_by_content_base_uuid(
+            content_base_uuid=content_base_uuid,
+            file_uuid=file_uuid,
+        )
+        ids = []
+        if len(results) > 0:
+            ids = [item["_id"] for item in results]
+            self.storage.delete(ids=ids)
+
         return self.storage.save(docs)
 
     def index(self, texts: List, metadatas: dict):
@@ -37,10 +49,12 @@ class ContentBaseIndexer(IDocumentIndexer):
         matched_responses = self.storage.search(search, filter, threshold)
         return set([doc.metadata.get("full_page") for doc in matched_responses])
 
-    def _search_docs_by_content_base_uuid(self, content_base_uuid: UUID):
+    def _search_docs_by_content_base_uuid(self, content_base_uuid: UUID, file_uuid: str = None):
         search_filter = {
             "metadata.content_base_uuid": content_base_uuid
         }
+        if file_uuid:
+            search_filter.update({"metadata.file_uuid": file_uuid})
         return self.storage.query_search(search_filter)
 
     def delete(self, content_base_uuid: UUID, filename: str):
