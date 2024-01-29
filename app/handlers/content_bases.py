@@ -13,6 +13,7 @@ from app.handlers.authorizations import token_verification
 class ContentBaseIndexRequest(BaseModel):
     file: str
     filename: str
+    file_uuid: str
     extension_file: str
     task_uuid: str
     content_base: str
