@@ -57,11 +57,14 @@ class ContentBaseIndexer(IDocumentIndexer):
             search_filter.update({"metadata.file_uuid": file_uuid})
         return self.storage.query_search(search_filter)
 
-    def delete(self, content_base_uuid: UUID, filename: str):
+    def delete(self, content_base_uuid: UUID, filename: str, file_uuid: str):
         search_filter = {
             "metadata.content_base_uuid": content_base_uuid,
-            "metadata.source": filename,
+            "metadata.file_uuid": file_uuid,
         }
+
+        if filename:
+            search_filter.update({"metadata.source": filename})
 
         scroll_id, results = self.storage.search_delete(search_filter)
         ids = []

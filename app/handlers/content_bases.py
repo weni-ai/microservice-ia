@@ -38,9 +38,12 @@ class ContentBaseSearchResponse(BaseModel):
 class ContentBaseDeleteRequest(BaseModel):
     filename: str
     content_base: str
+    file_uuid: str
+
 
 class ContentBaseDeleteResponse(BaseModel):
     deleted: bool
+
 
 class ContentBaseHandler(IDocumentHandler):
     def __init__(self, content_base_indexer: IDocumentIndexer):
@@ -74,7 +77,8 @@ class ContentBaseHandler(IDocumentHandler):
         token_verification(Authorization)
         self.content_base_indexer.delete(
             request.content_base,
-            request.filename
+            request.filename,
+            request.file_uuid,
         )
         return ContentBaseDeleteResponse(deleted=True)
 
