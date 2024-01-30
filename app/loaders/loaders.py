@@ -165,9 +165,19 @@ def xlsx_loader(file: str) -> Callable:
     loader = UnstructuredExcelLoader(file, mode="elements")
     return loader.load()
 
+from urllib.request import urlretrieve
+from urllib.parse import urlparse
 class XlsxLoader(DocumentLoader):
     def __init__(self, file:str) -> None:
-        self.loader = UnstructuredExcelLoader(file, mode="single")
+        tmp_file, _ = self._get_temp_file(file)
+        self.loader = UnstructuredExcelLoader(tmp_file, mode="single")
+    
+    def _get_temp_file(self, file_url: str):
+        result = urlparse(file_url)
+        filename = result.path.strip("/")
+        file_path, message = urlretrieve(file_url, f"/tmp/{filename}")
+        return file_path, message
+
 
     def load(self) -> List[Document]:
         return self.loader.load_and_split()
