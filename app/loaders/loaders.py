@@ -130,7 +130,7 @@ def pdf_loader(file: str) -> Callable:
 
 class DocxLoader(DocumentLoader):
     def __init__(self, file:str) -> None:
-        self.loader = UnstructuredWordDocumentLoader(file)
+        self.loader = Docx2txtLoader(file)
 
     def load(self) -> List[Document]:
         return self.loader.load_and_split()
