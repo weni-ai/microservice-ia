@@ -1,3 +1,9 @@
+v0.1.1
+----------
+ * Sentry integration
+ * Elasticsearch timeout configuration
+ * Route for / with status 200
+
 v0.1.0
 ----------
  * Index, Delete and Search products

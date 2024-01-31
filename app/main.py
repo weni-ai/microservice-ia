@@ -1,3 +1,5 @@
+import sentry_sdk
+from elasticsearch import Elasticsearch
 from fastapi import FastAPI
 from langchain.embeddings import SagemakerEndpointEmbeddings, HuggingFaceHubEmbeddings
 from langchain.embeddings.base import Embeddings
@@ -38,11 +40,19 @@ class App:
                 content_handler=content_handler,
             )
 
+        if config.sentry_dsn != "":
+            sentry_sdk.init(
+                dsn=config.sentry_dsn,
+            )
+
         self.api = FastAPI()
         self.vectorstore = ElasticVectorSearch(
             elasticsearch_url=config.es_url,
             index_name=config.product_index_name,
             embedding=self.embeddings,
+        )
+        self.vectorstore.client = Elasticsearch(
+            hosts=config.es_url, timeout=int(config.es_timeout)
         )
         self.elasticStore = ElasticsearchVectorStoreIndex(self.vectorstore)
         self.products_indexer = ProductsIndexer(self.elasticStore)
@@ -52,3 +62,8 @@ class App:
 
 config = AppConfig()
 main_app = App(config)
+
+
+@main_app.api.get('/', status_code=200)
+def home():
+    return {}

@@ -21,6 +21,8 @@ docx2txt = "^0.8"
 networkx = "^3.2.1"
 pandas = "^2.1.2"
 openpyxl = "^3.1.2"
+sentry-sdk = {extras = ["fastapi"], version = "^1.35.0"}
+
 
 
 [tool.poetry.group.dev.dependencies]
