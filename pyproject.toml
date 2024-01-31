@@ -21,8 +21,12 @@ docx2txt = "^0.8"
 networkx = "^3.2.1"
 pandas = "^2.1.2"
 openpyxl = "^3.1.2"
-sentry-sdk = {extras = ["fastapi"], version = "^1.35.0"}
 
+python-dotenv = "^1.0.0"
+pydantic = "2.3.0"
+celery = "^5.3.6"
+redis = "^5.0.1"
+sentry-sdk = {extras = ["fastapi"], version = "^1.35.0"}
 
 
 [tool.poetry.group.dev.dependencies]
@@ -31,7 +35,15 @@ black = "^23.9.1"
 reportlab = "^4.0.7"
 xlsxwriter = "^3.1.9"
 flake8 = "^6.1.0"
+lorem-text = "^2.1"
+taskipy = "^1.12.2"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.taskipy.tasks]
+test = 'poetry run coverage run -m unittest discover ./app/tests/'
+post_test = 'coverage html'
+run = 'uvicorn app.main:main_app.api --reload'

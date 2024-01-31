@@ -1,11 +1,22 @@
 import unittest
 from app.loaders.loaders import (
     DataLoader,
+    DataLoaderCls,
+    PDFLoader,
+    DocxLoader,
+    TxtLoader,
     pdf_loader,
     txt_loader,
     docx_loader,
     u_docx_loader,
     xlsx_loader
+)
+from unittest import mock
+from app.loaders import (
+    load_file_url_and_split_text,
+    load_file_url_and_get_pages_text,
+    load_file_and_get_raw_text,
+    load_file_url_and_get_raw_text
 )
 import os
 import pathlib
@@ -13,13 +24,20 @@ import shutil
 import xlsxwriter
 from docx import Document
 from reportlab.pdfgen.canvas import Canvas
+from app.text_splitters import TextSplitter, character_text_splitter
+from typing import List
+
+
+TEST_DIR = pathlib.Path(__file__).parent.resolve()
+TEST_FILE_PATH = os.path.join(TEST_DIR, 'test_files')
 
 
 class TestDocumentLoader(unittest.TestCase):
-    test_dir = pathlib.Path(__file__).parent.resolve()
-    path = os.path.join(test_dir, 'test_files')
+    test_dir = TEST_DIR
+    path = TEST_FILE_PATH
     text_string = 'Hello, World!'
     file_name = 'test_file'
+    text_splitter = TextSplitter(character_text_splitter())
 
     @staticmethod
     def _create_test_dir():
@@ -103,6 +121,67 @@ class TestDocumentLoader(unittest.TestCase):
         data_loader = DataLoader(xlsx_loader, file_path)
         raw_text = data_loader.raw_text()
         self.assertEqual(type(raw_text), str)
+
+    def test_pdf_loader_cls(self):
+        file_path = f'{self.path}/{self.file_name}.pdf'
+        pdf_loader = PDFLoader(file_path)
+        split_pages: List[Document] = pdf_loader.load_and_split_text(self.text_splitter)
+        self.assertEqual(list, type(split_pages))
+
+    def test_docx_loader_cls(self):
+        file_path = f'{self.path}/{self.file_name}.docx'
+        docx_loader = DocxLoader(file_path)
+        split_pages: List[Document] = docx_loader.load_and_split_text(self.text_splitter)
+        self.assertEqual(list, type(split_pages))
+    
+    def test_txt_loader_cls(self):
+        file_path = f'{self.path}/{self.file_name}.txt'
+        docx_loader = TxtLoader(file_path)
+        split_pages: List[Document] = docx_loader.load_and_split_text(self.text_splitter)
+        self.assertEqual(list, type(split_pages))
+
+    def test_load_file_url_and_split_text(self):
+        file_path = f'{self.path}/{self.file_name}.pdf'
+        file_type = "pdf"
+        docs = load_file_url_and_split_text(file_path, file_type, self.text_splitter)
+        self.assertEqual(list, type(docs))
+
+    def test_load_file_url_and_get_pages_text(self):  # this function is deprecated
+        file_path = f'{self.path}/{self.file_name}.pdf'
+        file_type = "pdf"
+        docs = load_file_url_and_get_pages_text(file_path ,file_type)
+        self.assertEqual(list, type(docs))
+
+    @mock.patch.dict(os.environ, {"FILE_PATH": TEST_FILE_PATH})
+    def test_load_file_and_get_raw_text(self):  # this function is deprecated
+        file_type = "pdf"
+        raw_text = load_file_and_get_raw_text(f"{self.file_name}.{file_type}" ,file_type)
+        self.assertEqual(str, type(raw_text))
+
+    def test_file_url_and_get_raw_text(self):  # this function is deprecated
+        file_path = f'{self.path}/{self.file_name}.pdf'
+        file_type = "pdf"
+        raw_text = load_file_url_and_get_raw_text(file_path ,file_type)
+        self.assertEqual(str, type(raw_text))
+
+    def test_pdf_loader_cls_raw_text(self):
+        file_path = f'{self.path}/{self.file_name}.pdf'
+        pdf_loader = PDFLoader(file_path)
+        raw_text = pdf_loader.raw_text()
+        self.assertEqual(str, type(raw_text))
+
+    def test_data_loader_cls(self):
+        file_path = f'{self.path}/{self.file_name}.pdf'
+        data_loader = DataLoaderCls(PDFLoader, file_path)
+        loaded_data: List[Document] = data_loader.load()
+        self.assertEqual(list, type(loaded_data))
+    
+    def test_data_loader_raw_text(self):
+        file_path = f'{self.path}/{self.file_name}.pdf'
+        data_loader = DataLoaderCls(PDFLoader, file_path)
+        loaded_data: str = data_loader.raw_text()
+        self.assertEqual(str, type(loaded_data))
+
 
     @classmethod
     def tearDownClass(cls):
