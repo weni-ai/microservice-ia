@@ -1,24 +1,43 @@
-from typing import Callable, List
+import os
+from abc import ABC, abstractmethod
+
+from typing import Callable, List, Dict
+from langchain.schema.document import Document
 from langchain.text_splitter import CharacterTextSplitter
 from app.util import count_words
-import os
 
 DEFAULT_CHUNK_SIZE = os.environ.get("DEFAULT_CHUNK_SIZE", 75)
 DEFAULT_CHUNK_OVERLAP = os.environ.get("DEFAULT_CHUNK_OVERLAP", 75)
 DEFAULT_SEPARATOR = os.environ.get("DEFAULT_SEPARATOR", "\n")
 
 
-class TextSplitter:
-    def __init__(self, splitter: Callable, content: str) -> None:
-        self.splitter = splitter
-        self.content = content
+class ITextSplitter(ABC):  #pragma: no cover
 
-    def split_text(self) -> Callable:
-        return self.splitter(self.content)
+    @abstractmethod
+    def split_text(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def create_documents(self):
+        raise NotImplementedError
+
+
+class TextSplitter(ITextSplitter):
+    def __init__(self, text_splitter: Callable) -> None:
+        self.text_splitter = text_splitter
+
+    def split_text(self, content) -> List[str]:
+        pages = self.text_splitter.split_text(content)
+        return pages
+    
+    def create_documents(self, content: List[str], metadatas: List[Dict]) -> List[Document]:
+        return self.text_splitter.create_documents(content, metadatas=metadatas)
+
+    def split_documents(self, content: Document):
+        return self.text_splitter.split_documents(content)
 
 
 def character_text_splitter(
-        content: str,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
         chunk_overlap: int = DEFAULT_CHUNK_OVERLAP,
         length_function: Callable = count_words,
@@ -30,5 +49,10 @@ def character_text_splitter(
         length_function=length_function,
         separator=separator,
     )
-    pages = text_splitter.split_text(content)
-    return pages
+    return text_splitter
+
+
+def get_split_text(raw_data: str):
+    text_splitter = TextSplitter(character_text_splitter())
+    texts = text_splitter.split_text(raw_data)
+    return texts
