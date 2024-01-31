@@ -29,6 +29,10 @@ def index_file_data(content_base: Dict) -> bool:
     text_splitter = TextSplitter(character_text_splitter())
     manager = IndexerFileManager(file_downloader, main_app.content_base_indexer, text_splitter)
     index_result: bool = manager.index_file_url(content_base)
-    NexusRESTClient().index_succedded(task_succeded=index_result, nexus_task_uuid=content_base.get("task_uuid"))
+    NexusRESTClient().index_succedded(
+        task_succeded=index_result,
+        nexus_task_uuid=content_base.get("task_uuid"),
+        file_type=content_base.get("extension_file")
+    )
 
     return index_result

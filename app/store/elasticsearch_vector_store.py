@@ -1,8 +1,9 @@
+import os
+
 from langchain.vectorstores import VectorStore
 from langchain.docstore.document import Document
 
 from app.store import IStorage
-
 from fastapi.logger import logger
 class ElasticsearchVectorStoreIndex(IStorage):
     def __init__(self, vectorstore: VectorStore, score=1.55):
@@ -55,7 +56,8 @@ class ElasticsearchVectorStoreIndex(IStorage):
 class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
 
     def save(self, docs: list[Document])-> list[str]:
-        res = self.vectorstore.from_documents(docs, self.vectorstore.embeddings, index_name="content_bases")
+        index = os.environ.get("INDEX_CONTENTBASES_NAME", "content_bases")
+        res = self.vectorstore.from_documents(docs, self.vectorstore.embeddings, index_name=index)
         return res
 
     def query_search(self, search_filter: dict) -> list[dict]:
