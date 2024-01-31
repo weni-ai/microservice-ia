@@ -27,7 +27,6 @@ class AppConfig:
                 "HUGGINGFACE_API_TOKEN", "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"
             ),
         }
-
         self.sagemaker_aws ={
             "endpoint_name": os.environ.get(
                 "SAGEMAKER_ENDPOINT_NAME",
@@ -41,3 +40,5 @@ class AppConfig:
         self.content_base_index_name = os.environ.get(
             "INDEX_CONTENTBASES_NAME", "content_bases"
         )
+        self.sentry_dsn = os.environ.get("SENTRY_DSN", "")
+        self.es_timeout = os.environ.get("ELASTICSEARCH_TIMEOUT", "30")
