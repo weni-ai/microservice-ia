@@ -18,6 +18,7 @@ def add_file_metadata(document_pages: List[Document], content_base: Dict) -> Lis
     metadata = {
         "content_base_uuid": str(content_base.get('content_base')),
         "filename": content_base.get("filename"),
+        "file_uuid": content_base.get("file_uuid")
 
     }
     for page in document_pages:
