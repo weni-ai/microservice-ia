@@ -13,6 +13,7 @@ from app.handlers.authorizations import token_verification
 class ContentBaseIndexRequest(BaseModel):
     file: str
     filename: str
+    file_uuid: str
     extension_file: str
     task_uuid: str
     content_base: str
@@ -34,6 +35,16 @@ class ContentBaseSearchResponse(BaseModel):
     response: List[str]
 
 
+class ContentBaseDeleteRequest(BaseModel):
+    filename: str
+    content_base: str
+    file_uuid: str
+
+
+class ContentBaseDeleteResponse(BaseModel):
+    deleted: bool
+
+
 class ContentBaseHandler(IDocumentHandler):
     def __init__(self, content_base_indexer: IDocumentIndexer):
         self.content_base_indexer = content_base_indexer
@@ -42,7 +53,10 @@ class ContentBaseHandler(IDocumentHandler):
             "/content_base/index", endpoint=self.index, methods=["PUT"]
         )
         self.router.add_api_route(
-            "/content_base/search", endpoint=self.search, methods=["GET"]
+            "/content_base/search", endpoint=self.search, methods=["POST"]
+        )
+        self.router.add_api_route(
+            "/content_base/delete", endpoint=self.delete, methods=["DELETE"]
         )
 
     def index(self, request: ContentBaseIndexRequest, Authorization: Annotated[str | None, Header()] = None):
@@ -59,8 +73,14 @@ class ContentBaseHandler(IDocumentHandler):
     def batch_index(self):
         raise NotImplementedError
 
-    def delete(self):
-        raise NotImplementedError
+    def delete(self, request: ContentBaseDeleteRequest, Authorization: Annotated[str | None, Header()] = None):
+        token_verification(Authorization)
+        self.content_base_indexer.delete(
+            request.content_base,
+            request.filename,
+            request.file_uuid,
+        )
+        return ContentBaseDeleteResponse(deleted=True)
 
     def delete_batch(self):
         raise NotImplementedError
