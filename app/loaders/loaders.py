@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 
 from langchain.document_loaders import (
     TextLoader, PyPDFLoader, UnstructuredExcelLoader,
-    UnstructuredWordDocumentLoader, Docx2txtLoader, UnstructuredURLLoader
+    UnstructuredWordDocumentLoader, Docx2txtLoader, SeleniumURLLoader
 )
 from langchain.schema.document import Document
 from typing import Callable, List, Union
@@ -204,7 +204,7 @@ class URLsLoader(DocumentLoader):
 
     def __init__(self, urls: Union[List[str], str]) -> None:
         self.urls = self._urls(urls)
-        self.loader = UnstructuredURLLoader(urls=self.urls)
+        self.loader = SeleniumURLLoader(urls=self.urls)
 
     def load(self) -> List[Document]:
         return self.loader.load()
