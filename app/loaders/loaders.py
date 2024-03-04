@@ -10,6 +10,7 @@ from langchain.document_loaders import (
 from langchain.schema.document import Document
 from typing import Callable, List, Union
 from app.text_splitters import ITextSplitter
+import nltk
 
 
 class DocumentLoader(ABC):
@@ -197,12 +198,18 @@ class XlsxLoader(DocumentLoader):
 
 
 class URLsLoader(DocumentLoader):
+    def override_nltk_path(self) -> None:  # pragma: no cover
+        nltk_path = nltk.data.path
+        nltk_new_path = [f"/tmp{path}" for path in nltk_path]
+        nltk.data.path = nltk_new_path
+
     def _urls(self, urls: Union[List[str], str]):
         if isinstance(urls, str):
             return [urls]
         return urls
 
     def __init__(self, urls: Union[List[str], str]) -> None:
+        self.override_nltk_path()
         self.urls = self._urls(urls)
         self.loader = UnstructuredURLLoader(urls=self.urls)
 
