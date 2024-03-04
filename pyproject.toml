@@ -28,7 +28,7 @@ celery = "^5.3.6"
 redis = "^5.0.1"
 sentry-sdk = {extras = ["fastapi"], version = "^1.35.0"}
 xlrd = "^2.0.1"
-
+nltk = { git = "https://github.com/AlisoSouza/nltk.git", branch = "develop" }
 
 [tool.poetry.group.dev.dependencies]
 coverage = "^7.3.1"
