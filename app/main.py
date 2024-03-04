@@ -17,6 +17,7 @@ from app.util import ContentHandler
 from app.handlers.content_bases import ContentBaseHandler
 from app.indexer.content_bases import ContentBaseIndexer
 from app.embedders.embedders import SagemakerEndpointEmbeddingsKeys
+import nltk
 
 
 class App:
@@ -27,7 +28,13 @@ class App:
     products_handler: IDocumentHandler
     products_indexer: IDocumentIndexer
 
+    def override_nltk_path(self) -> None:
+        nltk_path = nltk.data.path
+        nltk_new_path = [f"/tmp{path}" for path in nltk_path]
+        nltk.data.path = nltk_new_path
+
     def __init__(self, config: AppConfig):
+        self.override_nltk_path()
         self.config = config
         if config.embedding_type == "huggingface":
             self.embeddings = HuggingFaceHubEmbeddings(
