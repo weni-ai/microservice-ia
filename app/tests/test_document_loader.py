@@ -160,6 +160,7 @@ class TestDocumentLoader(unittest.TestCase):
         split_pages: List[Document] = docx_loader.load_and_split_text(self.text_splitter)
         self.assertEqual(list, type(split_pages))
     
+    @mock.patch.dict(os.environ, {"AWS_STORAGE_BUCKET_NAME": "file-path"})
     def test_txt_loader_cls(self):
         file_path = f'{self.path}/{self.file_name}.txt'
         docx_loader = TxtLoader(file_path)
