@@ -13,10 +13,9 @@ RUN apt update && apt install libmagic1 curl unzip -y
 RUN poetry add python-magic
 
 RUN curl https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/tokenizers/punkt.zip --output punkt.zip
-RUN mkdir nltk_data
-RUN mkdir -p /nltk_data/tokenizers/
+RUN mkdir -p ~/nltk_data/tokenizers/
 RUN unzip punkt.zip
-RUN mv punkt/ /nltk_data/tokenizers/
+RUN mv punkt/ ~/nltk_data/tokenizers/
 RUN rm punkt.zip
 
 COPY . .
