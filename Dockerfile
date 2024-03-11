@@ -12,6 +12,8 @@ RUN poetry config virtualenvs.create false && \
 RUN apt update && apt install libmagic1 -y
 RUN poetry add python-magic
 
+RUN mkdir /tmp/nltk_data
+
 COPY . .
 
 EXPOSE 8000
