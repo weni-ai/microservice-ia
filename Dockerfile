@@ -11,7 +11,7 @@ RUN poetry config virtualenvs.create false && \
 
 RUN apt update && apt install libmagic1 -y
 RUN poetry add python-magic
-RUN python -m nltk.downloader punkt -d /usr/share/nltk_data
+RUN python -m nltk.downloader punkt averaged_perceptron_tagger -d /usr/share/nltk_data
 
 COPY . .
 
