@@ -210,5 +210,15 @@ class URLsLoader(DocumentLoader):
         return self.loader.load()
 
     def load_and_split_text(self, text_splitter: ITextSplitter) -> List[Document]:
-        docs = self.loader.load_and_split(text_splitter)
-        return docs
+        split_pages = []
+
+        pages = self.loader.load_and_split()
+        for page in pages:
+            page_content = page.page_content.lower()
+            metadatas = page.metadata
+            metadatas.update({"full_page": page_content})
+
+            text_chunks = text_splitter.split_text(page_content)
+            for chunk in text_chunks:
+                split_pages.append(Document(page_content=chunk, metadata=metadatas))
+        return split_pages
