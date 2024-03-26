@@ -33,17 +33,19 @@ class IndexerFileManager:
     def __init__(self,
                  file_downloader: IFileDownloader,
                  content_base_indexer: IDocumentIndexer,
-                 text_splitter: ITextSplitter
+                 text_splitter: ITextSplitter,
                  ) -> None:
         self.file_downloader = file_downloader
         self.content_base_indexer = content_base_indexer
         self.text_splitter = text_splitter
 
-    def index_file_url(self, content_base) -> bool:
+    def index_file_url(self, content_base, **kwargs) -> bool:
+        load_type = content_base.get("load_type")
         docs: List[Document] = load_file_url_and_split_text(
             content_base.get("file"),
             content_base.get('extension_file'),
-            self.text_splitter
+            self.text_splitter,
+            load_type=load_type
         )
         document_pages: List[Document] = add_file_metadata(docs, content_base)
         try:

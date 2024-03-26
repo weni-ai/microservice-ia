@@ -146,6 +146,17 @@ class TestDocumentLoader(unittest.TestCase):
         docs = load_file_url_and_split_text(file_path, file_type, self.text_splitter)
         self.assertEqual(list, type(docs))
 
+    def test_load_file_url_and_split_text_pdf_miner(self):
+        file_path = f'{self.path}/{self.file_name}.pdf'
+        file_type = "pdf"
+        docs = load_file_url_and_split_text(
+            file_path,
+            file_type,
+            self.text_splitter,
+            load_type="pdfminer"
+        )
+        self.assertEqual(list, type(docs))
+
     def test_load_file_url_and_get_pages_text(self):  # this function is deprecated
         file_path = f'{self.path}/{self.file_name}.pdf'
         file_type = "pdf"
