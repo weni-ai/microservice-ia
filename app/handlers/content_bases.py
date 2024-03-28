@@ -17,6 +17,7 @@ class ContentBaseIndexRequest(BaseModel):
     extension_file: str
     task_uuid: str
     content_base: str
+    load_type: str = None
 
 
 class ContentBaseIndexResponse(BaseModel):

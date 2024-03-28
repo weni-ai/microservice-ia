@@ -57,7 +57,10 @@ def load_file_url_and_get_pages_text(file_url: str, file_type: str) -> List[Docu
     return data_loader.load()
 
 
-def load_file_url_and_split_text(file_url: str, file_type: str, text_splitter: ITextSplitter) -> List[Document]:
+def load_file_url_and_split_text(file_url: str, file_type: str, text_splitter: ITextSplitter, **kwargs) -> List[Document]:
+
+    load_type = kwargs.get("load_type", None)
+
     loader = supported_loaders_cls.get(file_type)
-    data_loader = DataLoaderCls(loader, file_url)
+    data_loader = DataLoaderCls(loader=loader, file=file_url, load_type=load_type)
     return data_loader.load_and_split_text(text_splitter)
