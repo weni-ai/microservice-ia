@@ -7,7 +7,7 @@ RUN pip install poetry
 COPY pyproject.toml poetry.lock ./
 
 RUN poetry config virtualenvs.create false && \
-    poetry install --no-dev
+    poetry install --only main
 
 RUN apt update && apt install libmagic1 -y
 RUN poetry add python-magic
