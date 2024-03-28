@@ -27,7 +27,11 @@ def index_file_data(content_base: Dict) -> bool:
         os.environ.get("AWS_STORAGE_SECRET_KEY")
     )
     text_splitter = TextSplitter(character_text_splitter())
-    manager = IndexerFileManager(file_downloader, main_app.content_base_indexer, text_splitter)
+    manager = IndexerFileManager(
+        file_downloader,
+        main_app.content_base_indexer,
+        text_splitter,
+    )
     index_result: bool = manager.index_file_url(content_base)
     NexusRESTClient().index_succedded(
         task_succeded=index_result,

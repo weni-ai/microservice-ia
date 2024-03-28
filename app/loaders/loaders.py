@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 
 from langchain.document_loaders import (
     TextLoader, PyPDFLoader, UnstructuredExcelLoader,
-    UnstructuredWordDocumentLoader, Docx2txtLoader, UnstructuredURLLoader
+    UnstructuredWordDocumentLoader, Docx2txtLoader, UnstructuredURLLoader, PDFMinerLoader
 )
 from langchain.schema.document import Document
 from typing import Callable, List, Union
@@ -20,13 +20,19 @@ class DocumentLoader(ABC):
 
 
 class DataLoaderCls:
-    def __init__(self, loader: DocumentLoader, file: str) -> None:
-        self.loader = loader(file)
+    def __init__(self, loader: DocumentLoader, file: str, **kwargs) -> None:
+        load_type = kwargs.get("load_type")
+        self.loader = self.get_load_type(loader, load_type, file)
         self.file = file
+
+    def get_load_type(self, loader, load_type, file):
+        if load_type == "pdfminer":
+            return loader(loader="pdfminer", file=file)
+        return loader(file=file)
 
     def load(self) -> List[Document]:
         return self.loader.load()
-    
+
     def load_and_split_text(self, text_splitter: ITextSplitter) -> List[Document]:
         return self.loader.load_and_split_text(text_splitter)
 
@@ -90,8 +96,18 @@ class TxtLoader(DocumentLoader):
 
 
 class PDFLoader(DocumentLoader):
-    def __init__(self, file: str) -> None:
-        self.loader = PyPDFLoader(file)
+    def __init__(
+        self,
+        file: str,
+        **kwargs,
+    ) -> None:
+        loader_class = kwargs.get("loader")
+        self.loader = self.get_loader_class(loader_class)(file)
+
+    def get_loader_class(self, loader_class):
+        if loader_class == "pdfminer":
+            return PDFMinerLoader
+        return PyPDFLoader
 
     def load(self) -> List[Document]:
         pages = self.loader.load_and_split()
