@@ -204,7 +204,7 @@ class URLsLoader(DocumentLoader):
 
     def __init__(self, urls: Union[List[str], str]) -> None:
         self.urls = self._urls(urls)
-        self.loader = UnstructuredURLLoader(urls=self.urls)
+        self.loader = UnstructuredURLLoader(urls=self.urls, headers={"User-Agent": "Nexus-ai"})
 
     def load(self) -> List[Document]:
         return self.loader.load()
