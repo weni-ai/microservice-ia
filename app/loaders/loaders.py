@@ -27,8 +27,8 @@ class DataLoaderCls:
 
     def get_load_type(self, loader, load_type, file):
         if load_type == "pdfminer":
-            return loader(loader="pdfminer", file=file)
-        return loader(file=file)
+            return loader(file, loader="pdfminer")
+        return loader(file)
 
     def load(self) -> List[Document]:
         return self.loader.load()
