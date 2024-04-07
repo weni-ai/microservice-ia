@@ -1,7 +1,7 @@
 import sentry_sdk
 from elasticsearch import Elasticsearch
 from fastapi import FastAPI
-from langchain.embeddings import SagemakerEndpointEmbeddings, HuggingFaceHubEmbeddings
+from langchain.embeddings import SagemakerEndpointEmbeddings, HuggingFaceHubEmbeddings, CohereEmbeddings
 from langchain.embeddings.base import Embeddings
 from langchain.vectorstores import ElasticVectorSearch, VectorStore
 
@@ -36,6 +36,11 @@ class App:
                 huggingfacehub_api_token=config.huggingfacehub[
                     "huggingfacehub_api_token"
                 ],
+            )
+        elif config.embedding_type == "cohere":
+            self.embeddings = CohereEmbeddings(
+                model=config.cohere["model"],
+                cohere_api_key=config.cohere["cohere_api_token"]
             )
         else:  # sagemaker by default
             content_handler = ContentHandler()
