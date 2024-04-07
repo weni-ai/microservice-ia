@@ -40,7 +40,7 @@ class App:
         elif config.embedding_type == "cohere":
             self.embeddings = CohereEmbeddings(
                 model=config.cohere["model"],
-                cohere_api_key=config.cohere["cohere_api_token"]
+                cohere_api_key=config.cohere["cohere_api_key"]
             )
         else:  # sagemaker by default
             content_handler = ContentHandler()

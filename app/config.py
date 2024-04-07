@@ -22,7 +22,7 @@ class AppConfig:
             "model": os.environ.get(
                 "COHERE_MODEL", "embed-multilingual-v3.0"
             ),
-            "cohere_api_token": os.environ.get(
+            "cohere_api_key": os.environ.get(
                 "COHERE_API_KEY", "f9BfpzFleAcsa4HueXrCSWyMxJEOuMcpbesB2Rxo"
             ),
         }
