@@ -44,9 +44,11 @@ class App:
             )
         else:  # sagemaker by default
             content_handler = ContentHandler()
-            self.embeddings = SagemakerEndpointEmbeddings(
-                endpoint_name=config.sagemaker["endpoint_name"],
-                region_name=config.sagemaker["region_name"],
+            self.embeddings = SagemakerEndpointEmbeddingsKeys(
+                aws_key=config.sagemaker_aws["aws_key"],
+                aws_secret=config.sagemaker_aws["aws_secret"],
+                endpoint_name=config.sagemaker_aws["endpoint_name"],
+                region_name=config.sagemaker_aws["region_name"],
                 content_handler=content_handler,
             )
 
@@ -69,18 +71,10 @@ class App:
         self.products_handler = ProductsHandler(self.products_indexer)
         self.api.include_router(self.products_handler.router)
 
-        content_base_content_handler = ContentHandler()
-        self.content_base_embeddings = SagemakerEndpointEmbeddingsKeys(
-                aws_key=config.sagemaker_aws["aws_key"],
-                aws_secret=config.sagemaker_aws["aws_secret"],
-                endpoint_name=config.sagemaker_aws["endpoint_name"],
-                region_name=config.sagemaker_aws["region_name"],
-                content_handler=content_base_content_handler,
-            )
         self.content_base_vectorstore = ElasticVectorSearch(
             elasticsearch_url=config.es_url,
             index_name=config.content_base_index_name,
-            embedding=self.content_base_embeddings,
+            embedding=self.embeddings,
         )
         self.custom_elasticStore = ContentBaseElasticsearchVectorStoreIndex(self.content_base_vectorstore)
         self.content_base_indexer = ContentBaseIndexer(self.custom_elasticStore)
