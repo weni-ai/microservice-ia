@@ -18,6 +18,14 @@ class AppConfig:
             ),
             "region_name": os.environ.get("SAGEMAKER_REGION_NAME", "us-east-1"),
         }
+        self.cohere = {
+            "model": os.environ.get(
+                "COHERE_MODEL", "embed-multilingual-v3.0"
+            ),
+            "cohere_api_key": os.environ.get(
+                "COHERE_API_KEY", "f9BfpzFleAcsa4HueXrCSWyMxJEOuMcpbesB2Rxo"
+            ),
+        }
         self.huggingfacehub = {
             "repo_id": os.environ.get(
                 "HUGGINGFACE_REPO_ID", "sentence-transformers/all-MiniLM-L6-v2"

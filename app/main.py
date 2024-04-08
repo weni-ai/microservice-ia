@@ -1,7 +1,7 @@
 import sentry_sdk
 from elasticsearch import Elasticsearch
 from fastapi import FastAPI
-from langchain.embeddings import SagemakerEndpointEmbeddings, HuggingFaceHubEmbeddings
+from langchain.embeddings import SagemakerEndpointEmbeddings, HuggingFaceHubEmbeddings, CohereEmbeddings
 from langchain.embeddings.base import Embeddings
 from langchain.vectorstores import ElasticVectorSearch, VectorStore
 
@@ -37,11 +37,18 @@ class App:
                     "huggingfacehub_api_token"
                 ],
             )
+        elif config.embedding_type == "cohere":
+            self.embeddings = CohereEmbeddings(
+                model=config.cohere["model"],
+                cohere_api_key=config.cohere["cohere_api_key"]
+            )
         else:  # sagemaker by default
             content_handler = ContentHandler()
-            self.embeddings = SagemakerEndpointEmbeddings(
-                endpoint_name=config.sagemaker["endpoint_name"],
-                region_name=config.sagemaker["region_name"],
+            self.embeddings = SagemakerEndpointEmbeddingsKeys(
+                aws_key=config.sagemaker_aws["aws_key"],
+                aws_secret=config.sagemaker_aws["aws_secret"],
+                endpoint_name=config.sagemaker_aws["endpoint_name"],
+                region_name=config.sagemaker_aws["region_name"],
                 content_handler=content_handler,
             )
 
@@ -64,18 +71,10 @@ class App:
         self.products_handler = ProductsHandler(self.products_indexer)
         self.api.include_router(self.products_handler.router)
 
-        content_base_content_handler = ContentHandler()
-        self.content_base_embeddings = SagemakerEndpointEmbeddingsKeys(
-                aws_key=config.sagemaker_aws["aws_key"],
-                aws_secret=config.sagemaker_aws["aws_secret"],
-                endpoint_name=config.sagemaker_aws["endpoint_name"],
-                region_name=config.sagemaker_aws["region_name"],
-                content_handler=content_base_content_handler,
-            )
         self.content_base_vectorstore = ElasticVectorSearch(
             elasticsearch_url=config.es_url,
             index_name=config.content_base_index_name,
-            embedding=self.content_base_embeddings,
+            embedding=self.embeddings,
         )
         self.custom_elasticStore = ContentBaseElasticsearchVectorStoreIndex(self.content_base_vectorstore)
         self.content_base_indexer = ContentBaseIndexer(self.custom_elasticStore)
