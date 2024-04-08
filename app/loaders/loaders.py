@@ -74,7 +74,7 @@ class TxtLoader(DocumentLoader):
                 return file_path
         return file
 
-    def __init__(self, file:str) -> None:
+    def __init__(self, file:str, **kwargs) -> None:
         self.file = self._get_file(file)
         self.loader = TextLoader(self.file)
     
@@ -145,7 +145,7 @@ def pdf_loader(file: str) -> Callable:
 
 
 class DocxLoader(DocumentLoader):
-    def __init__(self, file:str) -> None:
+    def __init__(self, file:str, **kwargs) -> None:
         self.loader = Docx2txtLoader(file)
 
     def load(self) -> List[Document]:
@@ -184,7 +184,7 @@ def xlsx_loader(file: str) -> Callable:
 from urllib.request import urlretrieve
 from urllib.parse import urlparse
 class XlsxLoader(DocumentLoader):
-    def __init__(self, file:str) -> None:
+    def __init__(self, file:str, **kwargs) -> None:
         tmp_file, _ = self._get_temp_file(file)
         self.loader = UnstructuredExcelLoader(tmp_file, mode="single")
     
@@ -218,7 +218,7 @@ class URLsLoader(DocumentLoader):
             return [urls]
         return urls
 
-    def __init__(self, urls: Union[List[str], str]) -> None:
+    def __init__(self, urls: Union[List[str], str], **kwargs) -> None:
         self.urls = self._urls(urls)
         self.loader = UnstructuredURLLoader(urls=self.urls, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0"})
 
