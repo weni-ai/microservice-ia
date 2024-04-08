@@ -54,7 +54,7 @@ class DataLoader:
         for i, page in enumerate(pages):
             text = page.page_content
             if text:
-                raw_text += text.lower()
+                raw_text += text
         return raw_text
 
 
@@ -85,7 +85,7 @@ class TxtLoader(DocumentLoader):
         pages = self.load()
         split_pages = []
         for page in pages:
-            page_content = page.page_content.lower()
+            page_content = page.page_content
             metadatas = page.metadata
             metadatas.update({"full_page": page_content})
 
@@ -118,7 +118,7 @@ class PDFLoader(DocumentLoader):
         split_pages = []
 
         for page in pages:
-            page_content = page.page_content.lower()
+            page_content = page.page_content
             metadatas = page.metadata
             metadatas.update({"full_page": page_content})
 
@@ -134,7 +134,7 @@ class PDFLoader(DocumentLoader):
         for i, page in enumerate(pages):
             text = page.page_content
             if text:
-                raw_text += text.lower()
+                raw_text += text
         return raw_text
 
 
@@ -155,7 +155,7 @@ class DocxLoader(DocumentLoader):
         pages = self.load()
         split_pages = []
         for page in pages:
-            page_content = page.page_content.lower()
+            page_content = page.page_content
             metadatas = page.metadata
             metadatas.update({"full_page": page_content})
 
@@ -202,7 +202,7 @@ class XlsxLoader(DocumentLoader):
         pages = self.load()
         split_pages = []
         for page in pages:
-            page_content = page.page_content.lower()
+            page_content = page.page_content
             metadatas = page.metadata
             metadatas.update({"full_page": page_content})
 
@@ -230,7 +230,7 @@ class URLsLoader(DocumentLoader):
 
         pages = self.loader.load_and_split()
         for page in pages:
-            page_content = page.page_content.lower()
+            page_content = page.page_content
             metadatas = page.metadata
             metadatas.update({"full_page": page_content})
 

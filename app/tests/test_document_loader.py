@@ -98,25 +98,25 @@ class TestDocumentLoader(unittest.TestCase):
         file_path = f'{self.path}/{self.file_name}.pdf'
         data_loader = DataLoader(pdf_loader, file_path)
         raw_text = data_loader.raw_text()
-        self.assertEqual(raw_text, self.text_string.lower())
+        self.assertEqual(raw_text, self.text_string)
 
     def test_load_txt(self):
         file_path = f'{self.path}/{self.file_name}.txt'
         data_loader = DataLoader(txt_loader, file_path)
         raw_text = data_loader.raw_text()
-        self.assertEqual(raw_text, self.text_string.lower())
+        self.assertEqual(raw_text, self.text_string)
 
     def test_load_udocx(self):
         file_path = f'{self.path}/{self.file_name}.docx'
         data_loader = DataLoader(u_docx_loader, file_path)
         raw_text = data_loader.raw_text()
-        self.assertEqual(raw_text, self.text_string.lower())
+        self.assertEqual(raw_text, self.text_string)
 
     def test_load_docx(self):
         file_path = f'{self.path}/{self.file_name}.docx'
         data_loader = DataLoader(docx_loader, file_path)
         raw_text = data_loader.raw_text()
-        self.assertEqual(raw_text, self.text_string.lower())
+        self.assertEqual(raw_text, self.text_string)
 
     def test_load_xlsx(self):
         file_path = f'{self.path}/{self.file_name}.xlsx'

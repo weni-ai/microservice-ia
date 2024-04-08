@@ -89,7 +89,7 @@ class ContentBaseHandler(IDocumentHandler):
     def search(self, request: ContentBaseSearchRequest, Authorization: Annotated[str | None, Header()] = None):
         token_verification(Authorization)
         response = self.content_base_indexer.search(
-            search=request.search.lower(),
+            search=request.search,
             threshold=request.threshold,
             filter=request.filter
         )

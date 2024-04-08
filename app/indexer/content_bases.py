@@ -36,7 +36,7 @@ class ContentBaseIndexer(IDocumentIndexer):
             self.storage.delete(ids=ids)
 
         docs = [
-            Document(page_content=text.lower(), metadata=metadatas)
+            Document(page_content=text, metadata=metadatas)
             for text in texts
         ]
 
