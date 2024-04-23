@@ -76,6 +76,9 @@ class App:
             index_name=config.content_base_index_name,
             embedding=self.embeddings,
         )
+        self.content_base_vectorstore.client = Elasticsearch(
+            hosts=config.es_url, timeout=int(config.es_timeout)
+        )
         self.custom_elasticStore = ContentBaseElasticsearchVectorStoreIndex(self.content_base_vectorstore)
         self.content_base_indexer = ContentBaseIndexer(self.custom_elasticStore)
         self.content_base_handler = ContentBaseHandler(self.content_base_indexer)
