@@ -47,7 +47,20 @@ class ContentBaseIndexer(IDocumentIndexer):
 
     def search(self, search, filter=None, threshold=0.1) -> list[Product]:
         matched_responses = self.storage.search(search, filter, threshold)
-        return set([doc.metadata.get("full_page") for doc in matched_responses])
+
+        seen = set()
+        return_list = []
+
+        for doc in matched_responses:
+            full_page = doc.metadata.get("full_page")
+            if full_page not in seen:
+                seen.add(full_page)
+                return_list.append({
+                    "full_page": full_page,
+                    "filename": doc.metadata.get("filename")
+                })
+
+        return return_list
 
     def _search_docs_by_content_base_uuid(self, content_base_uuid: UUID, file_uuid: str = None):
         search_filter = {

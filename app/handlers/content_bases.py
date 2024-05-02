@@ -33,7 +33,7 @@ class ContentBaseSearchRequest(BaseModel):
 
 
 class ContentBaseSearchResponse(BaseModel):
-    response: List[str]
+    response: List[dict]
 
 
 class ContentBaseDeleteRequest(BaseModel):
