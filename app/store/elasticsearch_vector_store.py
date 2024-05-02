@@ -124,7 +124,6 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
 
     def search(self, search: str, filter=None, threshold=0.1) -> list[Document]:
         docs = self.vectorstore.similarity_search_with_score(query=search, k=5, filter=filter)
-        print(("[---] Response: ", docs[0][0].metadata.get('filename')))
         return [doc[0] for doc in docs if doc[1] > threshold]
 
     def delete(self, ids: list[str] = []) -> bool:
