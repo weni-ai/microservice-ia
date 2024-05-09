@@ -57,7 +57,8 @@ class ContentBaseIndexer(IDocumentIndexer):
                 seen.add(full_page)
                 return_list.append({
                     "full_page": full_page,
-                    "filename": doc.metadata.get("filename")
+                    "filename": doc.metadata.get("filename"),
+                    "file_uuid": doc.metadata.get("file_uuid"),
                 })
 
         return return_list
