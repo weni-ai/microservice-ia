@@ -3,7 +3,7 @@ from elasticsearch import Elasticsearch
 from fastapi import FastAPI
 from langchain.embeddings import SagemakerEndpointEmbeddings, HuggingFaceHubEmbeddings, CohereEmbeddings
 from langchain.embeddings.base import Embeddings
-from langchain.vectorstores import ElasticVectorSearch, VectorStore
+from langchain.vectorstores import ElasticVectorSearch, VectorStore, ElasticsearchStore
 
 from app.handlers import IDocumentHandler
 from app.handlers.products import ProductsHandler
@@ -71,8 +71,8 @@ class App:
         self.products_handler = ProductsHandler(self.products_indexer)
         self.api.include_router(self.products_handler.router)
 
-        self.content_base_vectorstore = ElasticVectorSearch(
-            elasticsearch_url=config.es_url,
+        self.content_base_vectorstore = ElasticsearchStore(
+            es_url=config.es_url,
             index_name=config.content_base_index_name,
             embedding=self.embeddings,
         )

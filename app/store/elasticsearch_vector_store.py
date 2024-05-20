@@ -57,7 +57,15 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
 
     def save(self, docs: list[Document])-> list[str]:
         index = os.environ.get("INDEX_CONTENTBASES_NAME", "content_bases")
-        res = self.vectorstore.from_documents(docs, self.vectorstore.embeddings, index_name=index)
+        res = self.vectorstore.from_documents(
+            docs,
+            self.vectorstore.embeddings,
+            index_name=index,
+            bulk_kwargs={
+                "chunk_size": os.environ.get("DEFAULT_CHUNK_SIZE", 75),
+                "max_chunk_bytes": 200000000
+            }
+        )
         return res
 
     def query_search(self, search_filter: dict) -> list[dict]:
