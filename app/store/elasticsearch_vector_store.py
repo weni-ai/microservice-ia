@@ -60,6 +60,7 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
         res = self.vectorstore.from_documents(
             docs,
             self.vectorstore.embeddings,
+            es_url=os.environ.get("ELASTICSEARCH_URL"),
             index_name=index,
             bulk_kwargs={
                 "chunk_size": os.environ.get("DEFAULT_CHUNK_SIZE", 75),
