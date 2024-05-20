@@ -132,7 +132,10 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
         return scroll_id, hits
 
     def search(self, search: str, filter=None, threshold=0.1) -> list[Document]:
-        docs = self.vectorstore.similarity_search_with_score(query=search, k=5, filter=filter)
+        content_base_uuid = filter.get("content_base_uuid")
+        q = {"match": {"metadata.content_base_uuid": content_base_uuid}}
+
+        docs = self.vectorstore.similarity_search_with_score(query=search, k=5, filter=q)
         return [doc[0] for doc in docs if doc[1] > threshold]
 
     def delete(self, ids: list[str] = []) -> bool:
