@@ -75,6 +75,7 @@ class App:
             es_url=config.es_url,
             index_name=config.content_base_index_name,
             embedding=self.embeddings,
+            strategy=ElasticsearchStore.ExactRetrievalStrategy()
         )
         self.content_base_vectorstore.client = Elasticsearch(
             hosts=config.es_url, timeout=int(config.es_timeout)
