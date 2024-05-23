@@ -94,15 +94,25 @@ class ContentBaseElasticsearchVectorStoreIndexTest(unittest.TestCase):
         self.vectorstore.embeddings = Mock()
         self.vectorstore.client.indices = Mock()
         self.storage = ContentBaseElasticsearchVectorStoreIndex(self.vectorstore)
-        self.doc = Document(page_content="test doc", metadata={"full_page": "test document index", "content_base_uuid": "dfff32e7-dce6-40f7-a86e-8f9618887977"})
+        self.doc = Document(
+            page_content="test doc",
+            metadata={
+                "full_page": "test document index",
+                "content_base_uuid": "dfff32e7-dce6-40f7-a86e-8f9618887977"
+            }
+        )
+
     def test_save(self):
         self.vectorstore.from_documents.return_value = [
             "f40a4707-549e-4847-8f48-19b1987b8149"
         ]
-        doc = Document(page_content="test doc", metadata={
-            "full_page": "test document index",
-            "content_base_uuid": "dfff32e7-dce6-40f7-a86e-8f9618887977"}
-            )
+        doc = Document(
+            page_content="test doc",
+            metadata={
+                "full_page": "test document index",
+                "content_base_uuid": "dfff32e7-dce6-40f7-a86e-8f9618887977"
+            }
+        )
         result = self.storage.save(doc)
         self.vectorstore.from_documents(
             [self.doc], self.vectorstore.embeddings, self.vectorstore.index_name
@@ -141,7 +151,7 @@ class ContentBaseElasticsearchVectorStoreIndexTest(unittest.TestCase):
             {"metadata.content_base_uuid": "dfff32e7-dce6-40f7-a86e-8f9618887977"}
         )
         self.assertEqual(result, mock_search_hits)
-    
+
     def test_query_search_with_exception(self):
         query_filter = {"content_base_uuid": "dfff32e7-dce6-40f7-a86e-8f9618887977"}
 
@@ -168,7 +178,7 @@ class ContentBaseElasticsearchVectorStoreIndexTest(unittest.TestCase):
         result = self.storage.search_delete(search_filter)
         mock_search_tuple = ('dfff32e7', [{'_id': '53899082-cf01-41d1-ba9b-320a90670755'}])
         self.assertEqual(result, mock_search_tuple)
-    
+
     def test_search_delete_scroll_id(self):
         search_filter = {
             "metadata.content_base_uuid": "dfff32e7-dce6-40f7-a86e-8f9618887977",

@@ -74,7 +74,11 @@ class ContentBaseHandler(IDocumentHandler):
     def batch_index(self):
         raise NotImplementedError
 
-    def delete(self, request: ContentBaseDeleteRequest, Authorization: Annotated[str | None, Header()] = None):
+    def delete(
+        self,
+        request: ContentBaseDeleteRequest,
+        Authorization: Annotated[str | None, Header()] = None
+    ):
         token_verification(Authorization)
         self.content_base_indexer.delete(
             request.content_base,
@@ -86,7 +90,11 @@ class ContentBaseHandler(IDocumentHandler):
     def delete_batch(self):
         raise NotImplementedError
 
-    def search(self, request: ContentBaseSearchRequest, Authorization: Annotated[str | None, Header()] = None):
+    def search(
+        self,
+        request: ContentBaseSearchRequest,
+        Authorization: Annotated[str | None, Header()] = None
+    ):
         token_verification(Authorization)
         response = self.content_base_indexer.search(
             search=request.search,

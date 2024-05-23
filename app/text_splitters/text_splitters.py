@@ -11,7 +11,7 @@ DEFAULT_CHUNK_OVERLAP = os.environ.get("DEFAULT_CHUNK_OVERLAP", 75)
 DEFAULT_SEPARATOR = os.environ.get("DEFAULT_SEPARATOR", "\n")
 
 
-class ITextSplitter(ABC):  #pragma: no cover
+class ITextSplitter(ABC):  # pragma: no cover
 
     @abstractmethod
     def split_text(self):
@@ -29,7 +29,7 @@ class TextSplitter(ITextSplitter):
     def split_text(self, content) -> List[str]:
         pages = self.text_splitter.split_text(content)
         return pages
-    
+
     def create_documents(self, content: List[str], metadatas: List[Dict]) -> List[Document]:
         return self.text_splitter.create_documents(content, metadatas=metadatas)
 

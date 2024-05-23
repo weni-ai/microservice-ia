@@ -1,18 +1,20 @@
 import os
 import boto3
-from app.downloaders import IFileDownloader
-from fastapi.logger import logger
+
+from typing import Tuple
 from urllib.parse import urlparse
-from typing import Tuple, List
+
+from app.downloaders import IFileDownloader
 
 
 class S3FileDownloader(IFileDownloader):
 
-    def __init__(self, 
-                 access_key: str,
-                 secret_key: str,
-                 bucket_name: str = os.environ.get("AWS_STORAGE_BUCKET_NAME"),
-        ) -> None:
+    def __init__(
+        self,
+        access_key: str,
+        secret_key: str,
+        bucket_name: str = os.environ.get("AWS_STORAGE_BUCKET_NAME"),
+    ) -> None:
         self.bucket_name = bucket_name
         self.access_key = access_key
         self.secret_key = secret_key
@@ -39,7 +41,9 @@ class S3FileDownloader(IFileDownloader):
         raise NotImplementedError
 
 
-def get_s3_bucket_and_file_name(file_url: str)-> Tuple[str, ...]:
+def get_s3_bucket_and_file_name(
+    file_url: str
+) -> Tuple[str, ...]:
     result = urlparse(file_url)
     bucket_name = result.netloc.split('.s3')[0]
     file_name = result.path.strip('/')

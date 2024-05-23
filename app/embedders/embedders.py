@@ -13,12 +13,12 @@ class SagemakerEndpointEmbeddingsKeys(SagemakerEndpointEmbeddings):
         import boto3
 
         session = boto3.Session(
-        aws_access_key_id=values["aws_key"],
-        aws_secret_access_key=values["aws_secret"]
+            aws_access_key_id=values["aws_key"],
+            aws_secret_access_key=values["aws_secret"]
         )
 
         values["client"] = session.client(
-        "sagemaker-runtime", region_name=values["region_name"]
+            "sagemaker-runtime", region_name=values["region_name"]
         )
 
         return values
@@ -69,11 +69,7 @@ class SagemakerEndpointEmbeddingsKeys(SagemakerEndpointEmbeddings):
                 return self.content_handler.transform_output(response["Body"])
             except Exception as e:
                 print(
-                    f"Error raised by inference endpoint: {e}\nBody: . Trying again in 5 seconds."
+                    f"Error raised by inference endpoint: {e}\nBody: {body}."
                 )
+                print("Trying again in 5 seconds.")
                 time.sleep(60 * 5)
-
-        raise ValueError(
-            f"Error raised by inference endpoint: {e}. Trying again in 5 seconds."
-        )
-        return self.content_handler.transform_output(response["Body"])

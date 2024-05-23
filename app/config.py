@@ -9,14 +9,19 @@ class AppConfig:
         self.product_index_name = os.environ.get(
             "INDEX_PRODUCTS_NAME", "catalog_products"
         )
-        self.es_url = os.environ.get("ELASTICSEARCH_URL", "http://localhost:9200")
+        self.es_url = os.environ.get(
+            "ELASTICSEARCH_URL",
+            "http://localhost:9200"
+        )
         self.embedding_type = os.environ.get("EMBEDDING_TYPE", "sagemaker")
         self.sagemaker = {
             "endpoint_name": os.environ.get(
                 "SAGEMAKER_ENDPOINT_NAME",
                 "huggingface-pytorch-inference-2023-07-28-21-01-20-147",
             ),
-            "region_name": os.environ.get("SAGEMAKER_REGION_NAME", "us-east-1"),
+            "region_name": os.environ.get(
+                "SAGEMAKER_REGION_NAME", "us-east-1"
+            ),
         }
         self.cohere = {
             "model": os.environ.get(
@@ -32,15 +37,19 @@ class AppConfig:
             ),
             "task": os.environ.get("HUGGINGFACE_TASK", "feature-extraction"),
             "huggingfacehub_api_token": os.environ.get(
-                "HUGGINGFACE_API_TOKEN", "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"
+                "HUGGINGFACE_API_TOKEN",
+                "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"
             ),
         }
-        self.sagemaker_aws ={
+        self.sagemaker_aws = {
             "endpoint_name": os.environ.get(
                 "SAGEMAKER_ENDPOINT_NAME",
                 "huggingface-pytorch-inference-2023-10-25-14-25-59-713",
             ),
-            "region_name": os.environ.get("SAGEMAKER_REGION_NAME", "us-east-1"),
+            "region_name": os.environ.get(
+                "SAGEMAKER_REGION_NAME",
+                "us-east-1"
+            ),
             "aws_key": os.environ.get("SAGE_MAKER_AWS_KEY"),
             "aws_secret": os.environ.get("SAGE_MAKER_AWS_SECRET"),
         }

@@ -22,7 +22,10 @@ class ProductsIndexer(IDocumentIndexer):
 
     def index_batch(self, catalog_id: str, products: list[Product]):
         retailer_ids = [product.product_retailer_id for product in products]
-        results = self._search_products_by_retailer_id(catalog_id, retailer_ids)
+        results = self._search_products_by_retailer_id(
+            catalog_id,
+            retailer_ids
+        )
         ids = []
         if len(results) > 0:
             ids = [item["_id"] for item in results]
@@ -35,7 +38,9 @@ class ProductsIndexer(IDocumentIndexer):
 
     def search(self, search, filter=None, threshold=0.1) -> list[Product]:
         matched_documents = self.storage.search(search, filter, threshold)
-        products = [Product.from_metadata(doc.metadata) for doc in matched_documents]
+        products = [
+            Product.from_metadata(doc.metadata) for doc in matched_documents
+        ]
         return products
 
     def _search_products_by_retailer_id(self, catalog_id, ids):
@@ -56,7 +61,10 @@ class ProductsIndexer(IDocumentIndexer):
         return ids
 
     def delete_batch(self, catalog_id, product_retailer_ids):
-        results = self._search_products_by_retailer_id(catalog_id, product_retailer_ids)
+        results = self._search_products_by_retailer_id(
+            catalog_id,
+            product_retailer_ids
+        )
         ids = []
         if len(results) > 0:
             ids = [item["_id"] for item in results]

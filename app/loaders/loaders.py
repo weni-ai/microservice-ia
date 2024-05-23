@@ -3,9 +3,17 @@ import uuid
 import requests
 from abc import ABC, abstractmethod
 
+from urllib.request import urlretrieve
+from urllib.parse import urlparse
+
 from langchain.document_loaders import (
-    TextLoader, PyPDFLoader, UnstructuredExcelLoader,
-    UnstructuredWordDocumentLoader, Docx2txtLoader, UnstructuredURLLoader, PDFMinerLoader
+    TextLoader,
+    PyPDFLoader,
+    UnstructuredExcelLoader,
+    UnstructuredWordDocumentLoader,
+    Docx2txtLoader,
+    UnstructuredURLLoader,
+    PDFMinerLoader
 )
 from langchain.schema.document import Document
 from typing import Callable, List, Union
@@ -33,7 +41,10 @@ class DataLoaderCls:
     def load(self) -> List[Document]:
         return self.loader.load()
 
-    def load_and_split_text(self, text_splitter: ITextSplitter) -> List[Document]:
+    def load_and_split_text(
+        self,
+        text_splitter: ITextSplitter
+    ) -> List[Document]:
         return self.loader.load_and_split_text(text_splitter)
 
     def raw_text(self) -> str:
@@ -62,6 +73,7 @@ def txt_loader(file: str) -> Callable:
     loader = TextLoader(file)
     return loader.load()
 
+
 class TxtLoader(DocumentLoader):
     def _get_file(self, file: str):
         if os.environ.get("AWS_STORAGE_BUCKET_NAME") in file:  # pragma: no cover
@@ -74,14 +86,22 @@ class TxtLoader(DocumentLoader):
                 return file_path
         return file
 
-    def __init__(self, file:str, **kwargs) -> None:
+    def __init__(
+        self,
+        file: str,
+        **kwargs
+    ) -> None:
+
         self.file = self._get_file(file)
         self.loader = TextLoader(self.file)
-    
+
     def load(self) -> List[Document]:
         return self.loader.load_and_split()
-    
-    def load_and_split_text(self, text_splitter: ITextSplitter) -> List[Document]:
+
+    def load_and_split_text(
+        self,
+        text_splitter: ITextSplitter
+    ) -> List[Document]:
         pages = self.load()
         split_pages = []
         for page in pages:
@@ -91,7 +111,12 @@ class TxtLoader(DocumentLoader):
 
             text_chunks = text_splitter.split_text(page_content)
             for chunk in text_chunks:
-                split_pages.append(Document(page_content=chunk, metadata=metadatas))
+                split_pages.append(
+                    Document(
+                        page_content=chunk,
+                        metadata=metadatas
+                    )
+                )
         return split_pages
 
 
@@ -113,7 +138,10 @@ class PDFLoader(DocumentLoader):
         pages = self.loader.load_and_split()
         return pages
 
-    def load_and_split_text(self, text_splitter: ITextSplitter) -> List[Document]:
+    def load_and_split_text(
+        self,
+        text_splitter: ITextSplitter
+    ) -> List[Document]:
         pages = self.load()
         split_pages = []
 
@@ -124,7 +152,12 @@ class PDFLoader(DocumentLoader):
 
             text_chunks = text_splitter.split_text(page_content)
             for chunk in text_chunks:
-                split_pages.append(Document(page_content=chunk, metadata=metadatas))
+                split_pages.append(
+                    Document(
+                        page_content=chunk,
+                        metadata=metadatas
+                    )
+                )
 
         return split_pages
 
@@ -145,13 +178,20 @@ def pdf_loader(file: str) -> Callable:
 
 
 class DocxLoader(DocumentLoader):
-    def __init__(self, file:str, **kwargs) -> None:
+    def __init__(
+        self,
+        file: str,
+        **kwargs
+    ) -> None:
         self.loader = Docx2txtLoader(file)
 
     def load(self) -> List[Document]:
         return self.loader.load_and_split()
-    
-    def load_and_split_text(self, text_splitter: ITextSplitter) -> List[Document]:
+
+    def load_and_split_text(
+        self,
+        text_splitter: ITextSplitter
+    ) -> List[Document]:
         pages = self.load()
         split_pages = []
         for page in pages:
@@ -161,7 +201,12 @@ class DocxLoader(DocumentLoader):
 
             text_chunks = text_splitter.split_text(page_content)
             for chunk in text_chunks:
-                split_pages.append(Document(page_content=chunk, metadata=metadatas))
+                split_pages.append(
+                    Document(
+                        page_content=chunk,
+                        metadata=metadatas
+                    )
+                )
         return split_pages
 
 
@@ -181,24 +226,29 @@ def xlsx_loader(file: str) -> Callable:
     loader = UnstructuredExcelLoader(file, mode="elements")
     return loader.load()
 
-from urllib.request import urlretrieve
-from urllib.parse import urlparse
+
 class XlsxLoader(DocumentLoader):
-    def __init__(self, file:str, **kwargs) -> None:
+    def __init__(
+        self,
+        file: str,
+        **kwargs
+    ) -> None:
         tmp_file, _ = self._get_temp_file(file)
         self.loader = UnstructuredExcelLoader(tmp_file, mode="single")
-    
+
     def _get_temp_file(self, file_url: str):  # pragma: no cover
         result = urlparse(file_url)
         filename = result.path.strip("/")
         file_path, message = urlretrieve(file_url, f"/tmp/{filename}")
         return file_path, message
 
-
     def load(self) -> List[Document]:
         return self.loader.load_and_split()
-    
-    def load_and_split_text(self, text_splitter: ITextSplitter) -> List[Document]:
+
+    def load_and_split_text(
+        self,
+        text_splitter: ITextSplitter
+    ) -> List[Document]:
         pages = self.load()
         split_pages = []
         for page in pages:
@@ -208,7 +258,12 @@ class XlsxLoader(DocumentLoader):
 
             text_chunks = text_splitter.split_text(page_content)
             for chunk in text_chunks:
-                split_pages.append(Document(page_content=chunk, metadata=metadatas))
+                split_pages.append(
+                    Document(
+                        page_content=chunk,
+                        metadata=metadatas
+                    )
+                )
         return split_pages
 
 
@@ -220,12 +275,20 @@ class URLsLoader(DocumentLoader):
 
     def __init__(self, urls: Union[List[str], str], **kwargs) -> None:
         self.urls = self._urls(urls)
-        self.loader = UnstructuredURLLoader(urls=self.urls, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0"})
+        self.loader = UnstructuredURLLoader(
+            urls=self.urls,
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0"
+            }
+        )
 
     def load(self) -> List[Document]:
         return self.loader.load()
 
-    def load_and_split_text(self, text_splitter: ITextSplitter) -> List[Document]:
+    def load_and_split_text(
+        self,
+        text_splitter: ITextSplitter
+    ) -> List[Document]:
         split_pages = []
 
         pages = self.loader.load_and_split()
@@ -236,5 +299,10 @@ class URLsLoader(DocumentLoader):
 
             text_chunks = text_splitter.split_text(page_content)
             for chunk in text_chunks:
-                split_pages.append(Document(page_content=chunk, metadata=metadatas))
+                split_pages.append(
+                    Document(
+                        page_content=chunk,
+                        metadata=metadatas
+                    )
+                )
         return split_pages

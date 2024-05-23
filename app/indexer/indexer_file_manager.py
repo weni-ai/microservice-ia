@@ -1,4 +1,8 @@
-from app.loaders import load_file_and_get_raw_text, load_file_url_and_get_raw_text, load_file_url_and_get_pages_text, load_file_url_and_split_text
+from app.loaders import (
+    load_file_and_get_raw_text,
+    load_file_url_and_get_raw_text,
+    load_file_url_and_split_text
+)
 from app.text_splitters import get_split_text
 from typing import Dict, List
 from fastapi.logger import logger
@@ -10,11 +14,15 @@ from app.text_splitters import ITextSplitter
 
 def get_file_metadata(content_base: Dict) -> Dict[str, str]:
     return {
-            'source': content_base.get("filename"),
-            "content_base_uuid": str(content_base.get('content_base'))
-        }
+        'source': content_base.get("filename"),
+        "content_base_uuid": str(content_base.get('content_base'))
+    }
 
-def add_file_metadata(document_pages: List[Document], content_base: Dict) -> List[Document]:
+
+def add_file_metadata(
+    document_pages: List[Document],
+    content_base: Dict
+) -> List[Document]:
     metadata = {
         "content_base_uuid": str(content_base.get('content_base')),
         "filename": content_base.get("filename"),
@@ -23,8 +31,9 @@ def add_file_metadata(document_pages: List[Document], content_base: Dict) -> Lis
     }
     for page in document_pages:
         page.metadata.update(metadata)
-    
+
     return document_pages
+
 
 class IndexerFileManager:
 
@@ -55,11 +64,10 @@ class IndexerFileManager:
             logger.exception(e)
             return False
 
-
     def index_file_url_raw_text(self, content_base):
         file_raw_text: str = load_file_url_and_get_raw_text(
-                content_base.get("file"), content_base.get('extension_file')
-            )
+            content_base.get("file"), content_base.get('extension_file')
+        )
         metadatas: Dict[str, str] = get_file_metadata(content_base)
         texts: List[str] = get_split_text(file_raw_text)
 
@@ -80,8 +88,8 @@ class IndexerFileManager:
             return False
 
         file_raw_text: str = load_file_and_get_raw_text(
-                filename, content_base.get('extension_file')
-            )
+            filename, content_base.get('extension_file')
+        )
         metadatas: Dict[str, str] = get_file_metadata(content_base)
         texts: List[str] = get_split_text(file_raw_text)
 

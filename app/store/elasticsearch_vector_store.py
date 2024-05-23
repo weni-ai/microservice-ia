@@ -4,7 +4,8 @@ from langchain.vectorstores import VectorStore
 from langchain.docstore.document import Document
 
 from app.store import IStorage
-from fastapi.logger import logger
+
+
 class ElasticsearchVectorStoreIndex(IStorage):
     def __init__(self, vectorstore: VectorStore, score=1.55):
         self.vectorstore = vectorstore
@@ -55,7 +56,7 @@ class ElasticsearchVectorStoreIndex(IStorage):
 
 class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
 
-    def save(self, docs: list[Document])-> list[str]:
+    def save(self, docs: list[Document]) -> list[str]:
         index = os.environ.get("INDEX_CONTENTBASES_NAME", "content_bases")
         res = self.vectorstore.from_documents(docs, self.vectorstore.embeddings, index_name=index)
         return res
@@ -71,7 +72,7 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
         }
         try:
             self.vectorstore.client.indices.get(index=self.vectorstore.index_name)
-        except Exception as e:
+        except Exception:
             return []
 
         source = ["metadata"]
@@ -105,11 +106,10 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
 
         try:
             self.vectorstore.client.indices.get(index=self.vectorstore.index_name)
-        except Exception as e:
+        except Exception:
             return []
 
         source = ["metadata"]
-
 
         response = self.vectorstore.client.search(
             index=self.vectorstore.index_name,
