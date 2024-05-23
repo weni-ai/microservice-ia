@@ -14,7 +14,12 @@ class NexusRESTClient:
             'Content-Type': "application/json"
         }
 
-    def index_succedded(self, task_succeded: bool, nexus_task_uuid: str, file_type: str) -> None:
+    def index_succedded(
+        self,
+        task_succeded: bool,
+        nexus_task_uuid: str,
+        file_type: str
+    ) -> None:
         endpoint = f'{self.base_url}/api/v1/content-base-file'
 
         if file_type == "txt":
@@ -24,10 +29,14 @@ class NexusRESTClient:
         else:
             ftype = "file"
 
-        data = { 
+        data = {
             "status": int(task_succeded),
             "task_uuid": nexus_task_uuid,
             "file_type": ftype,
         }
-        response = requests.patch(url=endpoint, data=json.dumps(data), headers=self.headers)
+        response = requests.patch(
+            url=endpoint,
+            data=json.dumps(data),
+            headers=self.headers
+        )
         response.raise_for_status()

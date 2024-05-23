@@ -160,7 +160,7 @@ class TestProductsHandler(unittest.TestCase):
         mock_request = ProductSearchRequest(
             search="Test", filter={"catalog_id": "789"}, threshold=0.5
         )
-        mock_product = Product(
+        Product(
             facebook_id="123456789",
             title="Test Product",
             org_id="123",

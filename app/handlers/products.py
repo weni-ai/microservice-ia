@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException
-from fastapi.logger import logger
 from pydantic import BaseModel
 
 from app.handlers import IDocumentHandler
@@ -78,8 +77,14 @@ class ProductsHandler(IDocumentHandler):
 
     def index(self, request: ProductIndexRequest):
         try:
-            docs = self.product_indexer.index(request.catalog_id, request.product)
-            return ProductIndexResponse(catalog_id=request.catalog_id, documents=docs)
+            docs = self.product_indexer.index(
+                request.catalog_id,
+                request.product
+            )
+            return ProductIndexResponse(
+                catalog_id=request.catalog_id,
+                documents=docs
+            )
         except Exception as e:
             raise HTTPException(status_code=500, detail=[{"msg": str(e)}])
 
@@ -88,7 +93,10 @@ class ProductsHandler(IDocumentHandler):
             docs = self.product_indexer.index_batch(
                 request.catalog_id, request.products
             )
-            return ProductIndexResponse(catalog_id=request.catalog_id, documents=docs)
+            return ProductIndexResponse(
+                catalog_id=request.catalog_id,
+                documents=docs
+            )
         except Exception as e:
             raise HTTPException(status_code=500, detail=[{"msg": str(e)}])
 
@@ -121,6 +129,9 @@ class ProductsHandler(IDocumentHandler):
             docs = self.product_indexer.delete_batch(
                 request.catalog_id, request.product_retailer_ids
             )
-            return ProductIndexResponse(catalog_id=request.catalog_id, documents=docs)
+            return ProductIndexResponse(
+                catalog_id=request.catalog_id,
+                documents=docs
+            )
         except Exception as e:
             raise HTTPException(status_code=500, detail=[{"msg": str(e)}])

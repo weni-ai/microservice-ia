@@ -19,6 +19,7 @@ class IFileDownloader(ABC):
     def download_file_bulk(self):
         pass
 
+
 def download_file(file_downloader, file_name: str) -> None:
     handler = file_downloader
     try:

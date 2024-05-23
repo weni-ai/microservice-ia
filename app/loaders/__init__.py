@@ -38,29 +38,48 @@ supported_loaders_cls = {
     'urls': URLsLoader,
 }
 
-def load_file_and_get_raw_text(file_name: str, file_type: str) -> str:
+
+def load_file_and_get_raw_text(
+    file_name: str,
+    file_type: str
+) -> str:
     file_path = f'{os.environ.get("FILE_PATH")}/{file_name}'
     loader = supported_loaders.get(file_type)
     data_loader = DataLoader(loader, file_path)
     return data_loader.raw_text()
 
 
-def load_file_url_and_get_raw_text(file_url: str, file_type: str) -> str:
+def load_file_url_and_get_raw_text(
+    file_url: str,
+    file_type: str
+) -> str:
     loader = supported_loaders.get(file_type)
     data_loader = DataLoader(loader, file_url)
     return data_loader.raw_text()
 
 
-def load_file_url_and_get_pages_text(file_url: str, file_type: str) -> List[Document]:
+def load_file_url_and_get_pages_text(
+    file_url: str,
+    file_type: str
+) -> List[Document]:
     loader = supported_loaders.get(file_type)
     data_loader = DataLoader(loader, file_url)
     return data_loader.load()
 
 
-def load_file_url_and_split_text(file_url: str, file_type: str, text_splitter: ITextSplitter, **kwargs) -> List[Document]:
+def load_file_url_and_split_text(
+    file_url: str,
+    file_type: str,
+    text_splitter: ITextSplitter,
+    **kwargs
+) -> List[Document]:
 
     load_type = kwargs.get("load_type", None)
 
     loader = supported_loaders_cls.get(file_type)
-    data_loader = DataLoaderCls(loader=loader, file=file_url, load_type=load_type)
+    data_loader = DataLoaderCls(
+        loader=loader,
+        file=file_url,
+        load_type=load_type
+    )
     return data_loader.load_and_split_text(text_splitter)

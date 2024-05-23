@@ -63,7 +63,11 @@ class ContentBaseIndexer(IDocumentIndexer):
 
         return return_list
 
-    def _search_docs_by_content_base_uuid(self, content_base_uuid: UUID, file_uuid: str = None):
+    def _search_docs_by_content_base_uuid(
+        self,
+        content_base_uuid: UUID,
+        file_uuid: str = None
+    ):
         search_filter = {
             "metadata.content_base_uuid": content_base_uuid
         }
@@ -85,8 +89,11 @@ class ContentBaseIndexer(IDocumentIndexer):
 
         while len(results) > 0:
             ids += [item["_id"] for item in results]
-            scroll_id, results = self.storage.search_delete(search_filter, scroll_id)
-        
+            scroll_id, results = self.storage.search_delete(
+                search_filter,
+                scroll_id
+            )
+
         if ids:
             self.storage.delete(ids=ids)
 

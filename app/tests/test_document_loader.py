@@ -73,10 +73,10 @@ class TestDocumentLoader(unittest.TestCase):
         worksheet = workbook.add_worksheet("Test sheet")
         scores = (
             ['Lorem', 4576],
-            ['Ipsum',   345],
-            ['Dolor',  9088],
-            ['Sit',    88],
-            ['Amet',    15],
+            ['Ipsum', 345],
+            ['Dolor', 9088],
+            ['Sit', 88],
+            ['Amet', 15],
         )
         row = 0
         col = 0
@@ -137,7 +137,7 @@ class TestDocumentLoader(unittest.TestCase):
         pdf_loader = PDFLoader(file_path)
         split_pages: List[Document] = pdf_loader.load_and_split_text(self.text_splitter)
         self.assertEqual(list, type(split_pages))
-    
+
     def test_urls_loader_cls(self):
         urls_loader = URLsLoader("https://en.wikipedia.org/wiki/Unit_testing")
         split_pages: List[Document] = urls_loader.load()
@@ -147,7 +147,7 @@ class TestDocumentLoader(unittest.TestCase):
         urls_loader = URLsLoader("https://en.wikipedia.org/wiki/Unit_testing")
         split_pages: List[Document] = urls_loader.load_and_split_text(self.text_splitter)
         self.assertEqual(list, type(split_pages))
-    
+
     def test_urls_list_loader_and_split_cls(self):
         urls = ["https://en.wikipedia.org/wiki/Unit_testing"]
         urls_loader = URLsLoader(urls)
@@ -159,7 +159,7 @@ class TestDocumentLoader(unittest.TestCase):
         docx_loader = DocxLoader(file_path)
         split_pages: List[Document] = docx_loader.load_and_split_text(self.text_splitter)
         self.assertEqual(list, type(split_pages))
-    
+
     @mock.patch.dict(os.environ, {"AWS_STORAGE_BUCKET_NAME": "file-path"})
     def test_txt_loader_cls(self):
         file_path = f'{self.path}/{self.file_name}.txt'
@@ -187,19 +187,19 @@ class TestDocumentLoader(unittest.TestCase):
     def test_load_file_url_and_get_pages_text(self):  # this function is deprecated
         file_path = f'{self.path}/{self.file_name}.pdf'
         file_type = "pdf"
-        docs = load_file_url_and_get_pages_text(file_path ,file_type)
+        docs = load_file_url_and_get_pages_text(file_path, file_type)
         self.assertEqual(list, type(docs))
 
     @mock.patch.dict(os.environ, {"FILE_PATH": TEST_FILE_PATH})
     def test_load_file_and_get_raw_text(self):  # this function is deprecated
         file_type = "pdf"
-        raw_text = load_file_and_get_raw_text(f"{self.file_name}.{file_type}" ,file_type)
+        raw_text = load_file_and_get_raw_text(f"{self.file_name}.{file_type}", file_type)
         self.assertEqual(str, type(raw_text))
 
     def test_file_url_and_get_raw_text(self):  # this function is deprecated
         file_path = f'{self.path}/{self.file_name}.pdf'
         file_type = "pdf"
-        raw_text = load_file_url_and_get_raw_text(file_path ,file_type)
+        raw_text = load_file_url_and_get_raw_text(file_path, file_type)
         self.assertEqual(str, type(raw_text))
 
     def test_pdf_loader_cls_raw_text(self):
@@ -213,13 +213,12 @@ class TestDocumentLoader(unittest.TestCase):
         data_loader = DataLoaderCls(PDFLoader, file_path)
         loaded_data: List[Document] = data_loader.load()
         self.assertEqual(list, type(loaded_data))
-    
+
     def test_data_loader_raw_text(self):
         file_path = f'{self.path}/{self.file_name}.pdf'
         data_loader = DataLoaderCls(PDFLoader, file_path)
         loaded_data: str = data_loader.raw_text()
         self.assertEqual(str, type(loaded_data))
-
 
     @classmethod
     def tearDownClass(cls):

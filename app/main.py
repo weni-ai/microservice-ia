@@ -1,7 +1,7 @@
 import sentry_sdk
 from elasticsearch import Elasticsearch
 from fastapi import FastAPI
-from langchain.embeddings import SagemakerEndpointEmbeddings, HuggingFaceHubEmbeddings, CohereEmbeddings
+from langchain.embeddings import HuggingFaceHubEmbeddings, CohereEmbeddings
 from langchain.embeddings.base import Embeddings
 from langchain.vectorstores import ElasticVectorSearch, VectorStore
 
@@ -9,7 +9,10 @@ from app.handlers import IDocumentHandler
 from app.handlers.products import ProductsHandler
 from app.indexer import IDocumentIndexer
 from app.indexer.products import ProductsIndexer
-from app.store.elasticsearch_vector_store import ElasticsearchVectorStoreIndex, ContentBaseElasticsearchVectorStoreIndex
+from app.store.elasticsearch_vector_store import (
+    ElasticsearchVectorStoreIndex,
+    ContentBaseElasticsearchVectorStoreIndex
+)
 from app.config import AppConfig
 from app.util import ContentHandler
 
@@ -83,6 +86,7 @@ class App:
         self.content_base_indexer = ContentBaseIndexer(self.custom_elasticStore)
         self.content_base_handler = ContentBaseHandler(self.content_base_indexer)
         self.api.include_router(self.content_base_handler.router)
+
 
 config = AppConfig()
 main_app = App(config)
