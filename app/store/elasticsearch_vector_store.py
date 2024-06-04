@@ -58,7 +58,16 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
 
     def save(self, docs: list[Document]) -> list[str]:
         index = os.environ.get("INDEX_CONTENTBASES_NAME", "content_bases")
-        res = self.vectorstore.from_documents(docs, self.vectorstore.embeddings, index_name=index)
+        res = self.vectorstore.from_documents(
+            docs,
+            self.vectorstore.embeddings,
+            es_url=os.environ.get("ELASTICSEARCH_URL"),
+            index_name=index,
+            bulk_kwargs={
+                "chunk_size": os.environ.get("DEFAULT_CHUNK_SIZE", 75),
+                "max_chunk_bytes": 200000000
+            }
+        )
         return res
 
     def query_search(self, search_filter: dict) -> list[dict]:
@@ -123,7 +132,10 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
         return scroll_id, hits
 
     def search(self, search: str, filter=None, threshold=0.1) -> list[Document]:
-        docs = self.vectorstore.similarity_search_with_score(query=search, k=5, filter=filter)
+        content_base_uuid = filter.get("content_base_uuid")
+        q = {"match": {"metadata.content_base_uuid": content_base_uuid}}
+
+        docs = self.vectorstore.similarity_search_with_score(query=search, k=5, filter=q)
         return [doc[0] for doc in docs if doc[1] > threshold]
 
     def delete(self, ids: list[str] = []) -> bool:
