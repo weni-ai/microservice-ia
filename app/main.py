@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from langchain.embeddings import HuggingFaceHubEmbeddings, CohereEmbeddings
 from langchain.embeddings.base import Embeddings
 from langchain.vectorstores import ElasticVectorSearch, VectorStore, ElasticsearchStore
+from sentry_sdk.integrations.fastapi import FastApiIntegration
 
 from app.handlers import IDocumentHandler
 from app.handlers.products import ProductsHandler
@@ -60,6 +61,8 @@ class App:
         if config.sentry_dsn != "":
             sentry_sdk.init(
                 dsn=config.sentry_dsn,
+                integrations=[FastApiIntegration()],
+                environment=config.environment,
             )
 
         self.api = FastAPI()

@@ -58,4 +58,5 @@ class AppConfig:
             "INDEX_CONTENTBASES_NAME", "content_bases"
         )
         self.sentry_dsn = os.environ.get("SENTRY_DSN", "")
+        self.environment = os.environ.get("ENVIRONMENT", "local")
         self.es_timeout = os.environ.get("ELASTICSEARCH_TIMEOUT", "30")
