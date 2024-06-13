@@ -1,4 +1,4 @@
-v1.3.0
+v0.2.10
 ----------
  * Add ElasticAPM to track api performance
  * Update Sentry integration 
