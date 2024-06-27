@@ -133,7 +133,7 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
 
     def search(self, search: str, filter=None, threshold=0.1) -> list[Document]:
         content_base_uuid = filter.get("content_base_uuid")
-        q = {'bool': {'filter': [{'term': {'metadata.content_base_uuid.keyword': content_base_uuid}}]}}
+        q = {"bool": {"filter": [{"term": {"metadata.content_base_uuid.keyword": content_base_uuid}}]}}
 
 
         docs = self.vectorstore.similarity_search_with_score(query=search, k=5, filter=q)

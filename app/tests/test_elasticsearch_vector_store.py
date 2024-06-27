@@ -136,7 +136,7 @@ class ContentBaseElasticsearchVectorStoreIndexTest(unittest.TestCase):
             search="test", filter=query_filter
         )
         self.vectorstore.similarity_search_with_score.assert_called_once_with(
-            query="test", k=5, filter={'match': {'metadata.content_base_uuid': 'dfff32e7-dce6-40f7-a86e-8f9618887977'}}
+            query="test", k=5, filter={"bool": {"filter": [{"term": {"metadata.content_base_uuid.keyword": "dfff32e7-dce6-40f7-a86e-8f9618887977"}}]}}
         )
         self.assertEqual(1, len(results))
         self.assertEqual(results[0].page_content, "test doc")
