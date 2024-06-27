@@ -1,3 +1,7 @@
+v0.2.11
+----------
+ * Fix ContentBase search query
+
 v0.2.10
 ----------
  * Add ElasticAPM to track api performance
