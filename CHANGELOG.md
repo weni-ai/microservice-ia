@@ -1,3 +1,9 @@
+v0.3.0
+----------
+ * Add new index to preview documents
+ * Add new preview API
+ * Fix unittests 
+
 v0.2.11
 ----------
  * Fix ContentBase search query
