@@ -1,5 +1,7 @@
 import os
 
+import sentry_sdk
+
 from langchain.vectorstores import VectorStore
 from langchain.docstore.document import Document
 
@@ -141,3 +143,55 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
 
     def delete(self, ids: list[str] = []) -> bool:
         return self.vectorstore.delete(ids)
+
+    def save_doc_content(self, full_content, content_base_uuid, filename, file_uuid) -> None:
+        elasticsearch_doc = {
+            "content": full_content,
+            "content_base_uuid": content_base_uuid,
+            "filename": filename,
+            "file_uuid":file_uuid
+        }
+        es_client = self.vectorstore.client
+        res = es_client.index(index="content_base_documents", body=elasticsearch_doc)
+        return
+
+    def search_doc_content(self, file_uuid: str, content_base_uuid: str) -> str:
+        query = {
+            "bool": {
+                "filter": [
+                    { "term": { "file_uuid.keyword": file_uuid}},
+                    { "term": { "content_base_uuid.keyword": content_base_uuid}}
+                ]
+            }
+        }
+        es_client = self.vectorstore.client
+        try:
+            res = es_client.search(index="content_base_documents", query=query)
+            hits = res["hits"]["hits"]
+
+            if len(hits) > 0:
+                doc = hits[0]
+                return doc.get("_source").get("content")
+            return ""
+        except Exception as e:
+            sentry_sdk.capture_message(f"{e}")
+            return ""
+
+    def check_if_doc_was_embedded_document(self, file_uuid: str, content_base_uuid: str) -> bool:
+        query = {
+            "bool": {
+                "filter": [
+                    { "term": { "metadata.file_uuid.keyword": file_uuid}},
+                    { "term": { "metadata.content_base_uuid.keyword": content_base_uuid}}
+                ]
+            }
+        }
+        es_client = self.vectorstore.client
+        try:
+            res = es_client.search(index=self.vectorstore.index_name, query=query)
+            hits = res["hits"].get("total").get("value")
+
+            return hits > 0
+        except Exception as e:
+            sentry_sdk.capture_message(f"{e}")
+            return False

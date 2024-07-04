@@ -130,13 +130,13 @@ class TestDocumentLoader(unittest.TestCase):
         mock_file_url.return_value = (file_path, "")
         xlsx_loader = XlsxLoader(file_path)
         split_pages: List[Document] = xlsx_loader.load_and_split_text(self.text_splitter)
-        self.assertEqual(list, type(split_pages))
+        self.assertEqual(tuple, type(split_pages))
 
     def test_pdf_loader_cls(self):
         file_path = f'{self.path}/{self.file_name}.pdf'
         pdf_loader = PDFLoader(file_path)
         split_pages: List[Document] = pdf_loader.load_and_split_text(self.text_splitter)
-        self.assertEqual(list, type(split_pages))
+        self.assertEqual(tuple, type(split_pages))
 
     def test_urls_loader_cls(self):
         urls_loader = URLsLoader("https://en.wikipedia.org/wiki/Unit_testing")
@@ -146,32 +146,32 @@ class TestDocumentLoader(unittest.TestCase):
     def test_urls_loader_and_split_cls(self):
         urls_loader = URLsLoader("https://en.wikipedia.org/wiki/Unit_testing")
         split_pages: List[Document] = urls_loader.load_and_split_text(self.text_splitter)
-        self.assertEqual(list, type(split_pages))
+        self.assertEqual(tuple, type(split_pages))
 
     def test_urls_list_loader_and_split_cls(self):
         urls = ["https://en.wikipedia.org/wiki/Unit_testing"]
         urls_loader = URLsLoader(urls)
         split_pages: List[Document] = urls_loader.load_and_split_text(self.text_splitter)
-        self.assertEqual(list, type(split_pages))
+        self.assertEqual(tuple, type(split_pages))
 
     def test_docx_loader_cls(self):
         file_path = f'{self.path}/{self.file_name}.docx'
         docx_loader = DocxLoader(file_path)
         split_pages: List[Document] = docx_loader.load_and_split_text(self.text_splitter)
-        self.assertEqual(list, type(split_pages))
+        self.assertEqual(tuple, type(split_pages))
 
     @mock.patch.dict(os.environ, {"AWS_STORAGE_BUCKET_NAME": "file-path"})
     def test_txt_loader_cls(self):
         file_path = f'{self.path}/{self.file_name}.txt'
         docx_loader = TxtLoader(file_path)
         split_pages: List[Document] = docx_loader.load_and_split_text(self.text_splitter)
-        self.assertEqual(list, type(split_pages))
+        self.assertEqual(tuple, type(split_pages))
 
     def test_load_file_url_and_split_text(self):
         file_path = f'{self.path}/{self.file_name}.pdf'
         file_type = "pdf"
         docs = load_file_url_and_split_text(file_path, file_type, self.text_splitter)
-        self.assertEqual(list, type(docs))
+        self.assertEqual(tuple, type(docs))
 
     def test_load_file_url_and_split_text_pdf_miner(self):
         file_path = f'{self.path}/{self.file_name}.pdf'
@@ -182,7 +182,7 @@ class TestDocumentLoader(unittest.TestCase):
             self.text_splitter,
             load_type="pdfminer"
         )
-        self.assertEqual(list, type(docs))
+        self.assertEqual(tuple, type(docs))
 
     def test_load_file_url_and_get_pages_text(self):  # this function is deprecated
         file_path = f'{self.path}/{self.file_name}.pdf'
