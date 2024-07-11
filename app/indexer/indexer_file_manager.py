@@ -53,22 +53,29 @@ class IndexerFileManager:
 
         docs: List[Document]
         full_content: str
-
+        print("Start load_filk_url_and_split_text")
         docs, full_content  = load_file_url_and_split_text(
             content_base.get("file"),
             content_base.get('extension_file'),
             self.text_splitter,
             load_type=load_type
         )
+        print("End load_filk_url_and_split_text")
+        print("Start add_file_metadata")
         document_pages: List[Document] = add_file_metadata(docs, content_base)
+        print("End add_file_metadata")
         try:
+            print("Start index_documents")
             self.content_base_indexer.index_documents(document_pages)
+            print("End index_documents")
+            print("Start index_doc_content")
             self.content_base_indexer.index_doc_content(
                 full_content=full_content,
                 content_base_uuid=str(content_base.get('content_base')),
                 filename=content_base.get("filename"),
                 file_uuid=content_base.get("file_uuid"),
             )
+            print("End index_doc_content")
             return True
         except Exception as e:  # TODO: handle exceptions
             logger.exception(e)

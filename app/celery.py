@@ -21,7 +21,7 @@ celery.conf.result_backend = os.environ.get(
 @celery.task(name="index_file")
 def index_file_data(content_base: Dict) -> bool:
     from app.main import main_app
-    print("Start indexing")
+    print("Start task")
 
     file_downloader = S3FileDownloader(
         os.environ.get("AWS_STORAGE_ACCESS_KEY"),
