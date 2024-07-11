@@ -1,5 +1,4 @@
 import os
-import pendulum
 from celery import Celery
 
 from typing import Dict
@@ -22,30 +21,30 @@ celery.conf.result_backend = os.environ.get(
 @celery.task(name="index_file")
 def index_file_data(content_base: Dict) -> bool:
     from app.main import main_app
-    print("Start indexing: ", pendulum.now())
+    print("Start indexing")
 
     file_downloader = S3FileDownloader(
         os.environ.get("AWS_STORAGE_ACCESS_KEY"),
         os.environ.get("AWS_STORAGE_SECRET_KEY")
     )
-    print("File downloader created: ", pendulum.now())
+    print("File downloader created")
     content_base_indexer = main_app.content_base_indexer
     text_splitter = TextSplitter(character_text_splitter())
-    print("Text splitter created: ", pendulum.now())
+    print("Text splitter created")
 
     manager = IndexerFileManager(
         file_downloader,
         content_base_indexer,
         text_splitter,
     )
-    print("Start indexing: ", pendulum.now())
+    print("Start indexing")
     index_result: bool = manager.index_file_url(content_base)
-    print("End indexing: ", pendulum.now())
+    print("End indexing")
     embbed_result: bool = content_base_indexer.check_if_doc_was_embedded_document(
         file_uuid=content_base.get("file_uuid"),
         content_base_uuid=str(content_base.get('content_base')),
     )
-    print("Embedding result: ", pendulum.now())
+    print("Embedding result")
 
     index_result = index_result and embbed_result
 
