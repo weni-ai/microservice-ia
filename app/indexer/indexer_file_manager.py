@@ -53,7 +53,7 @@ class IndexerFileManager:
 
         docs: List[Document]
         full_content: str
-        print("Start load_filk_url_and_split_text")
+        print("Start load_file_url_and_split_text")
         docs, full_content  = load_file_url_and_split_text(
             content_base.get("file"),
             content_base.get('extension_file'),

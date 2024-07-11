@@ -102,6 +102,7 @@ class TxtLoader(DocumentLoader):
         self,
         text_splitter: ITextSplitter
     ) -> Tuple[List[Document], str]:
+        print("Start TXT LOADER")
         data: List[Document] = self.loader.load()
         full_content = data[0].page_content
 
@@ -145,12 +146,16 @@ class PDFLoader(DocumentLoader):
         self,
         text_splitter: ITextSplitter
     ) -> Tuple[List[Document], str]:
+        print("Start PDF LOADER")
         data: List[Document] = self.loader.load()
+        print("data loaded")
         full_content = data[0].page_content
 
         pages = self.load()
+        print("pages loaded")
         split_pages = []
 
+        print("[FOR LOOP] Start splitting text")
         for page in pages:
             page_content = page.page_content
             metadatas = page.metadata
@@ -164,6 +169,7 @@ class PDFLoader(DocumentLoader):
                         metadata=metadatas
                     )
                 )
+        print("[FOR LOOP] End splitting text")
 
         return (split_pages, full_content)
 
@@ -198,6 +204,7 @@ class DocxLoader(DocumentLoader):
         self,
         text_splitter: ITextSplitter
     ) -> Tuple[List[Document], str]:
+        print("Start DOCX LOADER")
 
         data: List[Document] = self.loader.load()
         full_content = data[0].page_content
@@ -259,6 +266,7 @@ class XlsxLoader(DocumentLoader):
         self,
         text_splitter: ITextSplitter
     ) -> Tuple[List[Document], str]:
+        print("Start XLSX LOADER")
 
         data: List[Document] = self.load()
         full_content: str = data[0].page_content
@@ -303,6 +311,7 @@ class URLsLoader(DocumentLoader):
         self,
         text_splitter: ITextSplitter
     ) -> Tuple[List[Document], str]:
+        print("Start URLS LOADER")
         split_pages = []
         data: List[Document] = self.load()
         full_content: str = data[0].page_content
