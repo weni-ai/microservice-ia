@@ -14,16 +14,17 @@ class ContentBaseIndexer(IDocumentIndexer):
     def index_documents(self, docs: List[Document]):
         file_uuid = docs[0].metadata["file_uuid"]
         content_base_uuid = docs[0].metadata["content_base_uuid"]
-
+        print("start _search_docs_by_content_base_uuid")
         results = self._search_docs_by_content_base_uuid(
             content_base_uuid=content_base_uuid,
             file_uuid=file_uuid,
         )
+        print("end _search_docs_by_content_base_uuid")
         ids = []
         if len(results) > 0:
             ids = [item["_id"] for item in results]
             self.storage.delete(ids=ids)
-
+        print("start save")
         return self.storage.save(docs)
 
     def index(self, texts: List, metadatas: dict):

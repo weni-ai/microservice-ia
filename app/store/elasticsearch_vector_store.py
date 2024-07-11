@@ -14,6 +14,7 @@ class ElasticsearchVectorStoreIndex(IStorage):
         self.score = score
 
     def save(self, doc: Document) -> list[str]:
+        print("Entrou no save do ElasticsearchVectorStoreIndex")
         texts = [doc.page_content]
         metadatas = [doc.metadata]
         return self.vectorstore.add_texts(texts, metadatas)
@@ -59,7 +60,9 @@ class ElasticsearchVectorStoreIndex(IStorage):
 class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
 
     def save(self, docs: list[Document]) -> list[str]:
+        print("entrou no save do ContentBaseElasticsearchVectorStoreIndex")
         index = os.environ.get("INDEX_CONTENTBASES_NAME", "content_bases")
+        print("STARTOU FROM_DOCUMENTS")
         res = self.vectorstore.from_documents(
             docs,
             self.vectorstore.embeddings,
@@ -70,6 +73,7 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
                 "max_chunk_bytes": 200000000
             }
         )
+        print("TERMINOU FROM_DOCUMENTS")
         return res
 
     def query_search(self, search_filter: dict) -> list[dict]:
