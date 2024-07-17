@@ -4,7 +4,6 @@ from app.loaders import (
     load_file_url_and_split_text
 )
 from app.text_splitters import get_split_text
-from app.indexer.indexer_file_manager import add_file_metadata
 from typing import Dict, List
 from fastapi.logger import logger
 from langchain.schema.document import Document
