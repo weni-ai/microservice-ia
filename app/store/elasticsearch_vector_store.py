@@ -91,6 +91,7 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
             return []
 
         source = ["metadata"]
+        print("QUERY_SCRIPT", query_script)
         response = self.vectorstore.client.search(
             index=self.vectorstore.index_name, query=query_script, source=source
         )

@@ -16,6 +16,8 @@ class ContentBaseIndexer(IDocumentIndexer):
     def index_documents(self, dict_docs: dict, content_base_uuid: str):
 
         file_uuid = dict_docs[0].get("metadata").get("file_uuid")
+        print("file_uuid", file_uuid)
+        print("content_base_uuid", content_base_uuid)
         search_results = self._search_docs_by_content_base_uuid(
             content_base_uuid=content_base_uuid,
             file_uuid=file_uuid,
