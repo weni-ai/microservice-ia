@@ -3,7 +3,7 @@ from celery import Celery
 
 from typing import Dict
 
-from app.indexer.indexer_file_manager import IndexerFileManager, add_file_metadata
+from app.indexer.indexer_file_manager import IndexerFileManager
 
 from app.indexer.content_bases import ContentBaseIndexer
 from app.downloaders.s3 import S3FileDownloader
@@ -65,6 +65,7 @@ def document_save(
     content_base_uuid: str
 ) -> bool:
     from app.main import main_app
+    from app.indexer.indexer_file_manager import add_file_metadata
 
     storage = main_app.content_base_vectorstore
     docs = add_file_metadata(docs, content_base_uuid)
