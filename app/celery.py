@@ -62,7 +62,15 @@ def index_file_data(content_base: Dict) -> bool:
 
 @celery.task(name="save_file")
 def start_save(
-    storage: IStorage,
-    docs: List[Document]
+    docs: List[Document],
+    search_results: List[Dict]
 ) -> bool:
+    from app.main import main_app
+
+    ids = []
+    if len(search_results) > 0:
+        ids = [item["_id"] for item in search_results]
+        main_app.content_base_vectorstore.delete(ids=ids)
+
+    storage = main_app.content_base_vectorstore
     return storage.save(docs)

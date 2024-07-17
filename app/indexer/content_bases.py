@@ -21,13 +21,10 @@ class ContentBaseIndexer(IDocumentIndexer):
             file_uuid=file_uuid,
         )
         print("end _search_docs_by_content_base_uuid")
-        ids = []
-        if len(results) > 0:
-            ids = [item["_id"] for item in results]
-            self.storage.delete(ids=ids)
+
         print("start save")
 
-        task_status = start_save.delay(storage=self.storage, docs=docs)
+        task_status = start_save.delay(search_results=results, docs=docs)
         return task_status.wait()
 
     def index(self, texts: List, metadatas: dict):
