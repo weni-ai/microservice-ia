@@ -14,10 +14,18 @@ class ContentBaseIndexer(IDocumentIndexer):
         self.storage = storage
 
     def index_documents(self, dict_docs: dict, content_base_uuid: str):
+
+        file_uuid = dict_docs[0].get("metadata").get("file_uuid")
+        search_results = self._search_docs_by_content_base_uuid(
+            content_base_uuid=content_base_uuid,
+            file_uuid=file_uuid,
+        )
+
         print("mandou para task")
         task_status = document_save.delay(
             content_base_uuid=content_base_uuid,
-            docs=dict_docs
+            docs=dict_docs,
+            search_results=search_results
         )
         return task_status.wait()
 
