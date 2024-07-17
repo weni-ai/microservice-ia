@@ -1,10 +1,13 @@
 import os
 from celery import Celery
 
-from typing import Dict
+from typing import Dict, List
+
+from langchain.docstore.document import Document
+
+from app.store import IStorage
 from app.indexer.indexer_file_manager import IndexerFileManager
 from app.downloaders.s3 import S3FileDownloader
-
 from app.handlers.nexus import NexusRESTClient
 from app.text_splitters import TextSplitter, character_text_splitter
 
@@ -55,3 +58,11 @@ def index_file_data(content_base: Dict) -> bool:
     )
 
     return index_result
+
+
+@celery.task(name="save_file")
+def start_save(
+    storage: IStorage,
+    docs: List[Document]
+) -> bool:
+    return storage.save(docs)

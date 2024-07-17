@@ -1,5 +1,6 @@
 from langchain.docstore.document import Document
 
+from app.celery import start_save
 from app.handlers.products import Product
 from app.indexer import IDocumentIndexer
 from app.store import IStorage
@@ -25,7 +26,9 @@ class ContentBaseIndexer(IDocumentIndexer):
             ids = [item["_id"] for item in results]
             self.storage.delete(ids=ids)
         print("start save")
-        return self.storage.save(docs)
+
+        task_status = start_save.delay(storage=self.storage, docs=docs)
+        return task_status.wait()
 
     def index(self, texts: List, metadatas: dict):
         results = self._search_docs_by_content_base_uuid(
