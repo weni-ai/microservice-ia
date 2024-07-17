@@ -1,8 +1,9 @@
 from langchain.docstore.document import Document
 
-from app.celery import start_save
+from app.celery import document_save
 from app.handlers.products import Product
 from app.indexer import IDocumentIndexer
+
 from app.store import IStorage
 from typing import List
 from uuid import UUID
@@ -12,19 +13,12 @@ class ContentBaseIndexer(IDocumentIndexer):
     def __init__(self, storage: IStorage):
         self.storage = storage
 
-    def index_documents(self, docs: List[Document]):
-        file_uuid = docs[0].metadata["file_uuid"]
-        content_base_uuid = docs[0].metadata["content_base_uuid"]
-        print("start _search_docs_by_content_base_uuid")
-        results = self._search_docs_by_content_base_uuid(
+    def index_documents(self, dict_docs: dict, content_base_uuid: str):
+        print("mandou para task")
+        task_status = document_save.delay(
             content_base_uuid=content_base_uuid,
-            file_uuid=file_uuid,
+            docs=dict_docs
         )
-        print("end _search_docs_by_content_base_uuid")
-
-        print("start save")
-
-        task_status = start_save.delay(search_results=results, docs=docs)
         return task_status.wait()
 
     def index(self, texts: List, metadatas: dict):

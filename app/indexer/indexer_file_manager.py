@@ -4,6 +4,7 @@ from app.loaders import (
     load_file_url_and_split_text
 )
 from app.text_splitters import get_split_text
+from app.indexer.indexer_file_manager import add_file_metadata
 from typing import Dict, List
 from fastapi.logger import logger
 from langchain.schema.document import Document
@@ -53,22 +54,19 @@ class IndexerFileManager:
 
         docs: List[Document]
         full_content: str
-        print("Start load_file_url_and_split_text")
-        docs, full_content  = load_file_url_and_split_text(
+
+        docs, full_content = load_file_url_and_split_text(
             content_base.get("file"),
             content_base.get('extension_file'),
             self.text_splitter,
             load_type=load_type
         )
-        print("End load_filk_url_and_split_text")
-        print("Start add_file_metadata")
-        document_pages: List[Document] = add_file_metadata(docs, content_base)
-        print("End add_file_metadata")
+        dict_docs = [doc.dict() for doc in docs]
+
         try:
-            print("Start index_documents")
-            self.content_base_indexer.index_documents(document_pages)
-            print("End index_documents")
-            print("Start index_doc_content")
+            print("Start index_documents_content")
+            self.content_base_indexer.index_documents(dict_docs, content_base)
+            print("Start index doc content")
             self.content_base_indexer.index_doc_content(
                 full_content=full_content,
                 content_base_uuid=str(content_base.get('content_base')),

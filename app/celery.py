@@ -1,12 +1,11 @@
 import os
 from celery import Celery
 
-from typing import Dict, List
+from typing import Dict
 
-from langchain.docstore.document import Document
+from app.indexer.indexer_file_manager import IndexerFileManager, add_file_metadata
 
-from app.store import IStorage
-from app.indexer.indexer_file_manager import IndexerFileManager
+from app.indexer.content_bases import ContentBaseIndexer
 from app.downloaders.s3 import S3FileDownloader
 from app.handlers.nexus import NexusRESTClient
 from app.text_splitters import TextSplitter, character_text_splitter
@@ -60,12 +59,24 @@ def index_file_data(content_base: Dict) -> bool:
     return index_result
 
 
-@celery.task(name="save_file")
-def start_save(
-    docs: List[Document],
-    search_results: List[Dict]
+@celery.task(name="document_save")
+def document_save(
+    docs: dict,
+    content_base_uuid: str
 ) -> bool:
     from app.main import main_app
+
+    storage = main_app.content_base_vectorstore
+    docs = add_file_metadata(docs, content_base_uuid)
+    content_base_indexer = ContentBaseIndexer(storage)
+
+    file_uuid = docs[0].metadata["file_uuid"]
+    content_base_uuid = docs[0].metadata["content_base_uuid"]
+
+    search_results = content_base_indexer._search_docs_by_content_base_uuid(
+        content_base_uuid=content_base_uuid,
+        file_uuid=file_uuid,
+    )
 
     ids = []
     if len(search_results) > 0:
