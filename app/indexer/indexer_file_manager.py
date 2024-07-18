@@ -60,7 +60,11 @@ class IndexerFileManager:
             self.text_splitter,
             load_type=load_type
         )
+        print("DOCS: ", docs)
+        # PRINTA ISSO AQUI E DESCOBRE PQ TA INDO VAZIO NO INDEX_DOCUMENTS
         dict_docs = [doc.dict() for doc in docs]
+        print("DICT_DOCS: ", dict_docs)
+        print("DICT_DOCS.__dict__: ", dict_docs.__dict__)
 
         try:
             print("Start index_documents_content")
