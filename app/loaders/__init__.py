@@ -73,6 +73,8 @@ def load_file_url_and_split_text(
     file_url: str,
     file_type: str,
     text_splitter: ITextSplitter,
+    return_split_text: bool = True,
+    return_full_content: bool = False,
     **kwargs
 ) -> Tuple[List[Document], str]:
 
@@ -84,4 +86,8 @@ def load_file_url_and_split_text(
         file=file_url,
         load_type=load_type
     )
-    return data_loader.load_and_split_text(text_splitter)
+    return data_loader.load_and_split_text(
+        text_splitter,
+        return_split_text,
+        return_full_content,
+    )

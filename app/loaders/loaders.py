@@ -43,9 +43,15 @@ class DataLoaderCls:
 
     def load_and_split_text(
         self,
-        text_splitter: ITextSplitter
+        text_splitter: ITextSplitter,
+        return_split_text: bool = True,
+        return_full_content: bool = False,
     ) -> Tuple[List[Document], str]:
-        return self.loader.load_and_split_text(text_splitter)
+        return self.loader.load_and_split_text(
+            text_splitter,
+            return_split_text,
+            return_full_content,
+        )
 
     def raw_text(self) -> str:
         return self.loader.raw_text()
@@ -100,26 +106,34 @@ class TxtLoader(DocumentLoader):
 
     def load_and_split_text(
         self,
-        text_splitter: ITextSplitter
+        text_splitter: ITextSplitter,
+        return_split_text: bool = True,
+        return_full_content: bool = False,
     ) -> Tuple[List[Document], str]:
-        data: List[Document] = self.loader.load()
-        full_content = data[0].page_content
 
-        pages = self.load()
         split_pages = []
-        for page in pages:
-            page_content = page.page_content
-            metadatas = page.metadata
-            metadatas.update({"full_page": page_content})
+        full_content = ""
 
-            text_chunks = text_splitter.split_text(page_content)
-            for chunk in text_chunks:
-                split_pages.append(
-                    Document(
-                        page_content=chunk,
-                        metadata=metadatas
+        if return_full_content:
+            data: List[Document] = self.loader.load()
+            full_content = data[0].page_content
+
+        if return_split_text:
+            pages = self.load()
+            split_pages = []
+            for page in pages:
+                page_content = page.page_content
+                metadatas = page.metadata
+                metadatas.update({"full_page": page_content})
+
+                text_chunks = text_splitter.split_text(page_content)
+                for chunk in text_chunks:
+                    split_pages.append(
+                        Document(
+                            page_content=chunk,
+                            metadata=metadatas
+                        )
                     )
-                )
         return (split_pages, full_content)
 
 
@@ -143,27 +157,35 @@ class PDFLoader(DocumentLoader):
 
     def load_and_split_text(
         self,
-        text_splitter: ITextSplitter
+        text_splitter: ITextSplitter,
+        return_split_text: bool = True,
+        return_full_content: bool = False,
     ) -> Tuple[List[Document], str]:
-        data: List[Document] = self.loader.load()
-        full_content = data[0].page_content
-
-        pages = self.load()
+        
         split_pages = []
+        full_content = ""
 
-        for page in pages:
-            page_content = page.page_content
-            metadatas = page.metadata
-            metadatas.update({"full_page": page_content})
+        if return_full_content:
+            data: List[Document] = self.loader.load()
+            full_content = data[0].page_content
 
-            text_chunks = text_splitter.split_text(page_content)
-            for chunk in text_chunks:
-                split_pages.append(
-                    Document(
-                        page_content=chunk,
-                        metadata=metadatas
+        if return_split_text:
+            pages = self.load()
+            split_pages = []
+
+            for page in pages:
+                page_content = page.page_content
+                metadatas = page.metadata
+                metadatas.update({"full_page": page_content})
+
+                text_chunks = text_splitter.split_text(page_content)
+                for chunk in text_chunks:
+                    split_pages.append(
+                        Document(
+                            page_content=chunk,
+                            metadata=metadatas
+                        )
                     )
-                )
 
         return (split_pages, full_content)
 

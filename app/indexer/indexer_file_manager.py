@@ -52,9 +52,9 @@ class IndexerFileManager:
         load_type = content_base.get("load_type")
 
         docs: List[Document]
-        full_content: str
 
-        docs, full_content  = load_file_url_and_split_text(
+
+        docs, _  = load_file_url_and_split_text(
             content_base.get("file"),
             content_base.get('extension_file'),
             self.text_splitter,
@@ -63,12 +63,6 @@ class IndexerFileManager:
         document_pages: List[Document] = add_file_metadata(docs, content_base)
         try:
             self.content_base_indexer.index_documents(document_pages)
-            self.content_base_indexer.index_doc_content(
-                full_content=full_content,
-                content_base_uuid=str(content_base.get('content_base')),
-                filename=content_base.get("filename"),
-                file_uuid=content_base.get("file_uuid"),
-            )
             return True
         except Exception as e:  # TODO: handle exceptions
             logger.exception(e)
@@ -107,5 +101,28 @@ class IndexerFileManager:
             self.content_base_indexer.index(texts, metadatas)
             return True
         except Exception as e:  # TODO: handle exceptions
+            logger.exception(e)
+            return False
+
+    def index_full_text(self, content_base, **kwargs):
+        full_content: str
+        load_type = content_base.get("load_type")
+
+        try:
+            _, full_content  = load_file_url_and_split_text(
+                content_base.get("file"),
+                content_base.get('extension_file'),
+                self.text_splitter,
+                load_type=load_type,
+                return_split_text=False,
+                return_full_content=True,
+            )
+            self.content_base_indexer.index_doc_content(
+                    full_content=full_content,
+                    content_base_uuid=str(content_base.get('content_base')),
+                    filename=content_base.get("filename"),
+                    file_uuid=content_base.get("file_uuid"),
+                )
+        except Exception as e:
             logger.exception(e)
             return False

@@ -17,6 +17,30 @@ celery.conf.result_backend = os.environ.get(
     "CELERY_RESULT_BACKEND", "redis://localhost:6379"
 )
 
+@celery.task(name="index_file")
+def index_full_file_content(content_base):
+    from app.main import main_app
+
+    file_downloader = S3FileDownloader(
+        os.environ.get("AWS_STORAGE_ACCESS_KEY"),
+        os.environ.get("AWS_STORAGE_SECRET_KEY")
+    )
+    content_base_indexer = main_app.content_base_indexer
+    text_splitter = TextSplitter(character_text_splitter())
+    manager = IndexerFileManager(
+        file_downloader,
+        content_base_indexer,
+        text_splitter,
+    )
+    index_result: bool = manager.index_full_text(content_base)
+    # TODO: retry indexing full text or delete embeddings
+    NexusRESTClient().index_succedded(
+        task_succeded=index_result,
+        nexus_task_uuid=content_base.get("task_uuid"),
+        file_type=content_base.get("extension_file")
+    )
+
+
 
 @celery.task(name="index_file")
 def index_file_data(content_base: Dict) -> bool:
@@ -34,15 +58,18 @@ def index_file_data(content_base: Dict) -> bool:
         text_splitter,
     )
     index_result: bool = manager.index_file_url(content_base)
-    embbed_result: bool = content_base_indexer.check_if_doc_was_embedded_document(
-        file_uuid=content_base.get("file_uuid"),
-        content_base_uuid=str(content_base.get('content_base')),
-    )
 
-    index_result = index_result and embbed_result
+    if index_result:
+        embbed_result: bool = content_base_indexer.check_if_doc_was_embedded_document(
+            file_uuid=content_base.get("file_uuid"),
+            content_base_uuid=str(content_base.get('content_base')),
+        )
+        if embbed_result:
+            index_full_file_content.delay(content_base)
+            return
 
     NexusRESTClient().index_succedded(
-        task_succeded=index_result,
+        task_succeded=False,
         nexus_task_uuid=content_base.get("task_uuid"),
         file_type=content_base.get("extension_file")
     )
