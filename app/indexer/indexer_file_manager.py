@@ -49,11 +49,11 @@ class IndexerFileManager:
         self.text_splitter = text_splitter
 
     def index_file_url(self, content_base, **kwargs) -> bool:
+        print(f"[+ Indexando arquivo {content_base.get("file_uuid")} +]")
+
         load_type = content_base.get("load_type")
 
         docs: List[Document]
-
-
         docs, _  = load_file_url_and_split_text(
             content_base.get("file"),
             content_base.get('extension_file'),

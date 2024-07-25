@@ -77,7 +77,11 @@ def load_file_url_and_split_text(
     return_full_content: bool = False,
     **kwargs
 ) -> Tuple[List[Document], str]:
-
+    print("=================================================")
+    print(f"[+ Chamou load_file_url_and_split_text + ]")
+    print(f"[+ return_split_text: {return_split_text} +]")
+    print(f"[+ return_full_content: {return_full_content} +]")
+    print("=================================================")
     load_type = kwargs.get("load_type", None)
 
     loader = supported_loaders_cls.get(file_type)
