@@ -19,6 +19,9 @@ celery.conf.result_backend = os.environ.get(
 
 @celery.task(name="index_file")
 def index_full_file_content(content_base):
+    print("===========================================")
+    print(content_base)
+    print("===========================================")
     from app.main import main_app
     print("[+ Indexando arquivo inteiro +]")
 
