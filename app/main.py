@@ -1,7 +1,7 @@
 import sentry_sdk
 import os
 from elasticsearch import Elasticsearch
-from elasticapm.contrib.starlette import ElasticAPM, make_apm_client
+# from elasticapm.contrib.starlette import ElasticAPM, make_apm_client
 from fastapi import FastAPI
 from langchain.embeddings import HuggingFaceHubEmbeddings, CohereEmbeddings
 from langchain.embeddings.base import Embeddings
@@ -95,15 +95,15 @@ class App:
 
         # APM Configuration
 
-        apm_config = {
-            'SERVICE_NAME': os.environ.get('APM_SERVICE_NAME'),
-            'SECRET_TOKEN': os.environ.get('APM_SECRET_TOKEN'),
-            'SERVER_URL': os.environ.get('APM_SERVER_URL'),
-            'ENVIRONMENT': os.environ.get('APM_ENVIRONMENT'),
-        }
+        # apm_config = {
+        #     'SERVICE_NAME': os.environ.get('APM_SERVICE_NAME'),
+        #     'SECRET_TOKEN': os.environ.get('APM_SECRET_TOKEN'),
+        #     'SERVER_URL': os.environ.get('APM_SERVER_URL'),
+        #     'ENVIRONMENT': os.environ.get('APM_ENVIRONMENT'),
+        # }
 
-        apm_CLIENT = make_apm_client(apm_config)
-        self.api.add_middleware(ElasticAPM, client=apm_CLIENT)
+        # apm_CLIENT = make_apm_client(apm_config)
+        # self.api.add_middleware(ElasticAPM, client=apm_CLIENT)
 
 
 config = AppConfig()
