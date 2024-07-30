@@ -17,7 +17,7 @@ celery.conf.result_backend = os.environ.get(
     "CELERY_RESULT_BACKEND", "redis://localhost:6379"
 )
 
-@celery.task(name="index_file")
+@celery.task(name="index_full_file_content")
 def index_full_file_content(content_base):
     print("===========================================")
     print(content_base)
@@ -64,7 +64,7 @@ def index_file_data(content_base: Dict) -> bool:
     )
     index_result: bool = manager.index_file_url(content_base)
 
-    print("[+ Embedding do arquivo: {index_result} +]")
+    print("[+ Index File URL result: {index_result} +]")
 
     if index_result:
         embbed_result: bool = content_base_indexer.check_if_doc_was_embedded_document(
