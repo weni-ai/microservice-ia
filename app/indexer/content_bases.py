@@ -12,6 +12,9 @@ class ContentBaseIndexer(IDocumentIndexer):
         self.storage = storage
 
     def index_documents(self, docs: List[Document]):
+        BATCH_SIZE: int = 500
+        docs_size: int = len(docs)
+
         file_uuid = docs[0].metadata["file_uuid"]
         content_base_uuid = docs[0].metadata["content_base_uuid"]
 
@@ -24,7 +27,11 @@ class ContentBaseIndexer(IDocumentIndexer):
             ids = [item["_id"] for item in results]
             self.storage.delete(ids=ids)
 
-        return self.storage.save(docs)
+        for i in range(0, docs_size, BATCH_SIZE):
+            print(i, BATCH_SIZE+i)
+            self.storage.save(docs[i:BATCH_SIZE+i])
+
+        return
 
     def index(self, texts: List, metadatas: dict):
         results = self._search_docs_by_content_base_uuid(
