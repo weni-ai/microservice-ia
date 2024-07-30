@@ -123,6 +123,7 @@ class IndexerFileManager:
                     filename=content_base.get("filename"),
                     file_uuid=content_base.get("file_uuid"),
                 )
+            return True
         except Exception as e:
             logger.exception(e)
             return False
