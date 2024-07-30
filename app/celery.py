@@ -49,6 +49,9 @@ def index_full_file_content(content_base):
 
 @celery.task(name="index_file")
 def index_file_data(content_base: Dict) -> bool:
+    print("===========================================")
+    print(content_base)
+    print("===========================================")
     from app.main import main_app
 
     file_downloader = S3FileDownloader(
