@@ -137,7 +137,6 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
         content_base_uuid = filter.get("content_base_uuid")
         q = {"bool": {"filter": [{"term": {"metadata.content_base_uuid.keyword": content_base_uuid}}]}}
 
-
         docs = self.vectorstore.similarity_search_with_score(query=search, k=5, filter=q)
         return [doc[0] for doc in docs if doc[1] > threshold]
 
@@ -149,18 +148,18 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
             "content": full_content,
             "content_base_uuid": content_base_uuid,
             "filename": filename,
-            "file_uuid":file_uuid
+            "file_uuid": file_uuid
         }
         es_client = self.vectorstore.client
-        res = es_client.index(index="content_base_documents", body=elasticsearch_doc)
+        es_client.index(index="content_base_documents", body=elasticsearch_doc)
         return
 
     def search_doc_content(self, file_uuid: str, content_base_uuid: str) -> str:
         query = {
             "bool": {
                 "filter": [
-                    { "term": { "file_uuid.keyword": file_uuid}},
-                    { "term": { "content_base_uuid.keyword": content_base_uuid}}
+                    {"term": {"file_uuid.keyword": file_uuid}},
+                    {"term": {"content_base_uuid.keyword": content_base_uuid}}
                 ]
             }
         }
@@ -181,8 +180,8 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
         query = {
             "bool": {
                 "filter": [
-                    { "term": { "metadata.file_uuid.keyword": file_uuid}},
-                    { "term": { "metadata.content_base_uuid.keyword": content_base_uuid}}
+                    {"term": {"metadata.file_uuid.keyword": file_uuid}},
+                    {"term": {"metadata.content_base_uuid.keyword": content_base_uuid}}
                 ]
             }
         }

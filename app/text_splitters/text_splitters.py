@@ -4,11 +4,18 @@ from abc import ABC, abstractmethod
 from typing import Callable, List, Dict
 from langchain.schema.document import Document
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
 from app.util import count_words
 
 DEFAULT_CHUNK_SIZE = os.environ.get("DEFAULT_CHUNK_SIZE", 75)
 DEFAULT_CHUNK_OVERLAP = os.environ.get("DEFAULT_CHUNK_OVERLAP", 75)
 DEFAULT_SEPARATOR = os.environ.get("DEFAULT_SEPARATOR", "\n")
+
+PARENT_CHUNK_SIZE = os.environ.get("PARENT_CHUNK_SIZE", 1125)
+CHILD_CHUNK_SIZE = os.environ.get("CHILD_CHUNK_SIZE", 225)
+CHUNK_OVERLAP = os.environ.get("CHUNK_OVERLAP", 45)
+LENGTH_FUNCTION = count_words
 
 
 class ITextSplitter(ABC):  # pragma: no cover
@@ -56,3 +63,16 @@ def get_split_text(raw_data: str):
     text_splitter = TextSplitter(character_text_splitter())
     texts = text_splitter.split_text(raw_data)
     return texts
+
+
+def recursive_character_text_splitter(
+    chunk_size=PARENT_CHUNK_SIZE,
+    chunk_overlap=CHUNK_OVERLAP,
+    length_function=LENGTH_FUNCTION,
+):
+    recursive_text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        length_function=length_function,
+    )
+    return recursive_text_splitter
