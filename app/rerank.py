@@ -14,6 +14,7 @@ def rerank_chunks(
     threshold: float = RERANK_THRESHOLD,
     max_docs: int = 5,
 ):
+    print("[+  Rerank Chunks +]")
     co = cohere.Client(RERANK_API_KEY)
     responses = co.rerank(
         model=RERANK_MODEL,
