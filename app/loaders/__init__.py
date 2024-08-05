@@ -16,7 +16,7 @@ from app.loaders.loaders import (
     URLsLoader,
 )
 from langchain.schema.document import Document
-from typing import List
+from typing import List, Dict
 from app.text_splitters import ITextSplitter
 from typing import Tuple
 
@@ -73,9 +73,10 @@ def load_file_url_and_split_text(
     file_url: str,
     file_type: str,
     text_splitter: ITextSplitter,
+    return_split_text: bool = True,
+    return_full_content: bool = False,
     **kwargs
 ) -> Tuple[List[Document], str]:
-
     load_type = kwargs.get("load_type", None)
 
     loader = supported_loaders_cls.get(file_type)
@@ -84,4 +85,38 @@ def load_file_url_and_split_text(
         file=file_url,
         load_type=load_type
     )
-    return data_loader.load_and_split_text(text_splitter)
+    return data_loader.load_and_split_text(
+        text_splitter,
+        return_split_text,
+        return_full_content,
+    )
+
+
+def load_file_and_get_chunks(
+    file_url: str,
+    file_type: str,
+    metadata: Dict,
+    return_split_text: bool = True,
+    return_full_content: bool = False,
+    **kwargs
+) -> Tuple[List[Document], str]:
+
+    print("=================================================")
+    print("[+ load_file_and_get_chunks + ]")
+    print(f"[+ return_split_text: {return_split_text} +]")
+    print(f"[+ return_full_content: {return_full_content} +]")
+    print("=================================================")
+
+    load_type = kwargs.get("load_type", None)
+    loader = supported_loaders_cls.get(file_type)
+
+    data_loader = DataLoaderCls(
+        loader=loader,
+        file=file_url,
+        load_type=load_type
+    )
+    return data_loader.load_and_get_chunks(
+        metadata,
+        return_split_text,
+        return_full_content
+    )
