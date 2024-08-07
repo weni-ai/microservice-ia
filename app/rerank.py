@@ -14,17 +14,19 @@ def rerank_chunks(
     threshold: float = RERANK_THRESHOLD,
     max_docs: int = 5,
 ):
-    print("[+  Rerank Chunks +]")
-    co = cohere.Client(RERANK_API_KEY)
-    responses = co.rerank(
-        model=RERANK_MODEL,
-        query=query,
-        documents=chunks_list,
-        top_n=max_docs
-    )
-    results = []
+    if chunks_list:
+        print("[+  Rerank Chunks +]")
+        co = cohere.Client(RERANK_API_KEY)
+        responses = co.rerank(
+            model=RERANK_MODEL,
+            query=query,
+            documents=chunks_list,
+            top_n=max_docs
+        )
+        results = []
 
-    for r in responses.results:
-        if r.relevance_score > threshold:
-            results.append(r.document)
-    return results[:max_docs]
+        for r in responses.results:
+            if r.relevance_score > threshold:
+                results.append(r.document)
+        return results[:max_docs]
+    return chunks_list
