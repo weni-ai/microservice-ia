@@ -5,7 +5,7 @@ from app.indexer import IDocumentIndexer
 from app.store import IStorage
 from typing import List
 from uuid import UUID
-
+import os
 
 class ContentBaseIndexer(IDocumentIndexer):
     def __init__(self, storage: IStorage):
@@ -27,6 +27,9 @@ class ContentBaseIndexer(IDocumentIndexer):
         return self.storage.save(docs)
 
     def index(self, texts: List, metadatas: dict):
+
+        DOCUMENTS_BATCH_SIZE: int = os.environ.get("DOCUMENTS_BATCH_SIZE", 500)
+
         results = self._search_docs_by_content_base_uuid(
             content_base_uuid=metadatas.get('content_base_uuid')
         )
@@ -40,7 +43,12 @@ class ContentBaseIndexer(IDocumentIndexer):
             for text in texts
         ]
 
-        return self.storage.save(docs)
+        docs_size = len(docs)
+
+        for i in range(0, docs_size, DOCUMENTS_BATCH_SIZE):
+            self.storage.save(docs[i:DOCUMENTS_BATCH_SIZE + 1])
+
+        return
 
     def index_batch(self):
         raise NotImplementedError
