@@ -66,7 +66,7 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
             es_url=os.environ.get("ELASTICSEARCH_URL"),
             index_name=index,
             bulk_kwargs={
-                "chunk_size": os.environ.get("DEFAULT_CHUNK_SIZE", 75),
+                "chunk_size": os.environ.get("CHILD_CHUNK_SIZE", 225),
                 "max_chunk_bytes": 200000000
             }
         )
