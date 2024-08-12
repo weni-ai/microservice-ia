@@ -62,11 +62,15 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
         index = os.environ.get("INDEX_CONTENTBASES_NAME", "content_bases")
 
         if self.vectorstore.client.indices.exists(index=index):
-            index_documents = self.vectorstore.add_documents
-        else:
-            index_documents = self.vectorstore.from_documents
+            return self.vectorstore.add_documents(
+                docs,
+                bulk_kwargs={
+                    "chunk_size": os.environ.get("CHILD_CHUNK_SIZE", 225),
+                    "max_chunk_bytes": 200000000
+                }
+            )
 
-        res = index_documents(
+        res = self.vectorstore.from_documents(
             docs,
             self.vectorstore.embeddings,
             es_url=os.environ.get("ELASTICSEARCH_URL"),
