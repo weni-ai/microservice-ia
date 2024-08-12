@@ -60,7 +60,13 @@ class ContentBaseElasticsearchVectorStoreIndex(ElasticsearchVectorStoreIndex):
 
     def save(self, docs: list[Document]) -> list[str]:
         index = os.environ.get("INDEX_CONTENTBASES_NAME", "content_bases")
-        res = self.vectorstore.from_documents(
+
+        if self.vectorstore.client.indices.exists(index=index):
+            index_documents = self.vectorstore.add_documents
+        else:
+            index_documents = self.vectorstore.from_documents
+
+        res = index_documents(
             docs,
             self.vectorstore.embeddings,
             es_url=os.environ.get("ELASTICSEARCH_URL"),
