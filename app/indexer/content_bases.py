@@ -1,10 +1,12 @@
+import os
+from typing import List
+from uuid import UUID
+
 from langchain.docstore.document import Document
 
 from app.handlers.products import Product
 from app.indexer import IDocumentIndexer
 from app.store import IStorage
-from typing import List
-from uuid import UUID
 
 
 class ContentBaseIndexer(IDocumentIndexer):
@@ -12,6 +14,9 @@ class ContentBaseIndexer(IDocumentIndexer):
         self.storage = storage
 
     def index_documents(self, docs: List[Document]):
+        DOCUMENTS_BATCH_SIZE: int = os.environ.get("DOCUMENTS_BATCH_SIZE", 500)
+        docs_size: int = len(docs)
+
         file_uuid = docs[0].metadata["file_uuid"]
         content_base_uuid = docs[0].metadata["content_base_uuid"]
 
@@ -23,8 +28,11 @@ class ContentBaseIndexer(IDocumentIndexer):
         if len(results) > 0:
             ids = [item["_id"] for item in results]
             self.storage.delete(ids=ids)
+        
+        for i in range(0, docs_size, DOCUMENTS_BATCH_SIZE):
+            self.storage.save(docs[i:DOCUMENTS_BATCH_SIZE+1])
 
-        return self.storage.save(docs)
+        return
 
     def index(self, texts: List, metadatas: dict):
         results = self._search_docs_by_content_base_uuid(
